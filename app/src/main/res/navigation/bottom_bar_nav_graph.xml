@@ -3,43 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_bar_nav_graph"
-    app:startDestination="@id/discoverFragment">
-
-    <action
-        android:id="@+id/action_discoverFragment_to_showDetailFragment"
-        app:destination="@id/showDetailFragment" />
-
-    <action
-        android:id="@+id/action_home_to_settingsFragment"
-        app:destination="@id/settingsFragment" />
-
+    app:startDestination="@id/homeMenuFragment">
     <fragment
-        android:id="@+id/discoverFragment"
-        android:name="es.unex.giiis.asee.tiviclone.view.home.DiscoverFragment"
-        android:label="@string/discover_option"
-        tools:layout="@layout/fragment_discover" >
-    </fragment>
+        android:id="@+id/homeMenuFragment"
+        android:name="es.unex.giiis.asee.tiviclone.view.home.HomeMenuFragment"
+        android:label="fragment_home_menu"
+        tools:layout="@layout/fragment_home_menu" />
     <fragment
-        android:id="@+id/libraryFragment"
-        android:name="es.unex.giiis.asee.tiviclone.view.home.LibraryFragment"
-        android:label="@string/library_option"
-        tools:layout="@layout/fragment_library" />
-    <fragment
-        android:id="@+id/userFragment"
-        android:name="es.unex.giiis.asee.tiviclone.view.home.UserFragment"
-        android:label="@string/user_option"
-        tools:layout="@layout/fragment_user" />
-    <fragment
-        android:id="@+id/showDetailFragment"
-        android:name="es.unex.giiis.asee.tiviclone.view.home.ShowDetailFragment"
-        android:label="Show detail"
-        tools:layout="@layout/fragment_show_detail" >
+        android:id="@+id/profileFragment"
+        android:name="es.unex.giiis.asee.tiviclone.view.home.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" >
         <argument
-            android:name="show"
-            app:argType="es.unex.giiis.asee.tiviclone.data.model.Show" />
+            android:name="userData"
+            app:argType="es.unex.giiis.asee.tiviclone.data.model.User" />
     </fragment>
     <fragment
-        android:id="@+id/settingsFragment"
-        android:name="es.unex.giiis.asee.tiviclone.view.home.SettingsFragment"
-        android:label="Settings" />
+        android:id="@+id/emergencyFragment"
+        android:name="es.unex.giiis.asee.tiviclone.view.home.EmergencyFragment"
+        android:label="fragment_emergency"
+        tools:layout="@layout/fragment_emergency" />
 </navigation>
