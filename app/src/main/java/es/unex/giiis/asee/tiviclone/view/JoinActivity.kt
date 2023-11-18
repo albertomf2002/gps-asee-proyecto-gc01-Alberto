@@ -17,6 +17,7 @@ class JoinActivity : AppCompatActivity() {
 
     companion object {
 
+
         const val USERNAME = "JOIN_USERNAME"
         const val PASS = "JOIN_PASS"
         fun start(
