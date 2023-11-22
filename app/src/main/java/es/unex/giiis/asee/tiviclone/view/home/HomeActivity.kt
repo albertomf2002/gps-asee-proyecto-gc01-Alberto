@@ -68,7 +68,8 @@ class HomeActivity : AppCompatActivity() {
             appBarConfiguration = AppBarConfiguration(
                 setOf(
                     R.id.homeMenuFragment,
-                    R.id.profileFragment
+                    R.id.profileFragment,
+                    R.id.emergencyFragment
                 )
             )
         setSupportActionBar(binding.toolbar)
@@ -76,7 +77,7 @@ class HomeActivity : AppCompatActivity() {
 
         // Hide toolbar and bottom navigation when in detail fragment
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if ((/*destination.id == R.id.showDetailFragment*/false) ||
+            if ((destination.id == R.id.recordRegistryFragment) ||
                 (/*destination.id == R.id.settingsFragment*/false)){
              //   binding.toolbar.visibility = View.GONE
                 binding.toolbar.menu.clear()

@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -52,8 +53,21 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:5.0.0-rc01")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
 
+    // Room dependencies
+    val room_version = "2.5.0"
+
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+
+    ksp("androidx.room:room-compiler:$room_version")
+
+    implementation("androidx.room:room-ktx:$room_version")
+
+    testImplementation("androidx.room:room-testing:$room_version")
+
     // Navigation Component
     val navVersion = "2.5.3"
+
 
     // Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
