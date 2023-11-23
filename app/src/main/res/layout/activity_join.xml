@@ -9,113 +9,261 @@
     tools:context=".view.JoinActivity">
 
 
-
-        <ImageView
-            android:id="@+id/tv_login_title"
-            android:layout_width="333dp"
-            android:layout_height="163dp"
-            android:layout_marginTop="8dp"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/logo_clone"
+        <ScrollView
+            android:layout_width="385dp"
+            android:layout_height="938dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.662"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tv_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/user_string"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/tv_login_title"
-            app:layout_constraintTop_toBottomOf="@id/tv_login_title" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/et_username"
-            android:layout_width="305dp"
-            android:layout_height="48dp"
-            android:autofillHints="username"
-            android:backgroundTint="#00BCD4"
-            android:gravity="start"
-            android:hint="@string/user_string"
-            android:inputType="textPersonName"
-            android:textAlignment="viewStart"
-            android:textSize="22sp"
-            app:layout_constraintEnd_toEndOf="@+id/tv_login_title"
-            app:layout_constraintStart_toStartOf="@id/tv_username"
-            app:layout_constraintTop_toBottomOf="@id/tv_username" />
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tv_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/password_string"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/tv_login_title"
-            app:layout_constraintTop_toBottomOf="@id/et_username" />
+                                <ImageView
+                                    android:id="@+id/tv_login_title"
+                                    android:layout_width="333dp"
+                                    android:layout_height="163dp"
+                                    android:contentDescription="@string/app_name"
+                                    android:src="@drawable/logo_clone"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/et_password"
-            android:layout_width="305dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="12dp"
-            android:autofillHints="password"
-            android:backgroundTint="#00BCD4"
-            android:gravity="start"
-            android:hint="@string/password_string"
-            android:inputType="textPassword"
-            android:textAlignment="viewStart"
-            android:textSize="22sp"
-            app:layout_constraintEnd_toEndOf="@+id/et_username"
-            app:layout_constraintStart_toStartOf="@id/tv_password"
-            app:layout_constraintTop_toBottomOf="@id/tv_password" />
+                                <TextView
+                                    android:id="@+id/tv_username"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/user_string"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                    android:textSize="14sp"
+                                    tools:layout_editor_absoluteY="179dp" />
 
-        <TextView
-            android:id="@+id/tv_repassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/repeat_password"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/tv_login_title"
-            app:layout_constraintTop_toBottomOf="@id/et_password" />
+                                <EditText
+                                    android:id="@+id/et_username"
+                                    android:layout_width="305dp"
+                                    android:layout_height="48dp"
+                                    android:autofillHints="username"
+                                    android:backgroundTint="#00BCD4"
+                                    android:gravity="start"
+                                    android:hint="@string/user_string"
+                                    android:inputType="textPersonName"
+                                    android:textAlignment="viewStart"
+                                    android:textSize="22sp"
+                                    tools:layout_editor_absoluteY="198dp" />
 
-        <EditText
-            android:id="@+id/et_repassword"
-            android:layout_width="305dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="12dp"
-            android:autofillHints="password"
-            android:backgroundTint="#00BCD4"
-            android:gravity="start"
-            android:hint="@string/password_string"
-            android:inputType="textPassword"
-            android:textAlignment="viewStart"
-            android:textSize="22sp"
-            app:layout_constraintEnd_toEndOf="@+id/et_password"
-            app:layout_constraintStart_toStartOf="@id/tv_repassword"
-            app:layout_constraintTop_toBottomOf="@id/tv_repassword" />
+                                <TextView
+                                    android:id="@+id/tv_password"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/password_string"
+                                    android:textSize="14sp"
+                                    tools:layout_editor_absoluteY="266dp" />
+
+                                <EditText
+                                    android:id="@+id/et_password"
+                                    android:layout_width="305dp"
+                                    android:layout_height="48dp"
+                                    android:autofillHints="password"
+                                    android:backgroundTint="#00BCD4"
+                                    android:gravity="start"
+                                    android:hint="@string/password_string"
+                                    android:inputType="textPassword"
+                                    android:textAlignment="viewStart"
+                                    android:textSize="22sp"
+                                    tools:layout_editor_absoluteX="12dp"
+                                    tools:layout_editor_absoluteY="285dp" />
+
+                                <TextView
+                                    android:id="@+id/tv_repassword"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/repeat_password"
+                                    android:textSize="14sp"
+                                    tools:layout_editor_absoluteY="353dp" />
+
+                                <EditText
+                                    android:id="@+id/et_repassword"
+                                    android:layout_width="305dp"
+                                    android:layout_height="48dp"
+                                    android:autofillHints="password"
+                                    android:backgroundTint="#00BCD4"
+                                    android:gravity="start"
+                                    android:hint="@string/password_string"
+                                    android:inputType="textPassword"
+                                    android:textAlignment="viewStart"
+                                    android:textSize="22sp"
+                                    tools:layout_editor_absoluteX="12dp"
+                                    tools:layout_editor_absoluteY="372dp" />
+
+                                <TextView
+                                    android:id="@+id/tv_realname"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Nombre"
+                                    android:textSize="14sp"
+                                    tools:layout_editor_absoluteY="440dp" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <EditText
+                            android:id="@+id/et_realname"
+                            android:layout_width="305dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="12dp"
+                            android:autofillHints="name"
+                            android:backgroundTint="#00BCD4"
+                            android:gravity="start"
+                            android:hint="Nombre"
+                            android:inputType="textPersonName"
+                            android:textAlignment="viewStart"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:id="@+id/tv_lastname"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="Apellido"
+                            android:textSize="14sp" />
+
+                        <EditText
+                            android:id="@+id/et_lastname"
+                            android:layout_width="305dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="12dp"
+                            android:autofillHints="familyName"
+                            android:backgroundTint="#00BCD4"
+                            android:gravity="start"
+                            android:hint="Apellido"
+                            android:inputType="textPersonName"
+                            android:textAlignment="viewStart"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:id="@+id/tv_email"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="Email"
+                            android:textSize="14sp" />
+
+                        <EditText
+                            android:id="@+id/et_email"
+                            android:layout_width="305dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="12dp"
+                            android:autofillHints="email"
+                            android:backgroundTint="#00BCD4"
+                            android:gravity="start"
+                            android:hint="Email"
+                            android:inputType="textEmailAddress"
+                            android:textAlignment="viewStart"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:id="@+id/tv_address"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="Dirección"
+                            android:textSize="14sp" />
+
+                        <EditText
+                            android:id="@+id/et_address"
+                            android:layout_width="305dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="12dp"
+                            android:autofillHints="streetAddress"
+                            android:backgroundTint="#00BCD4"
+                            android:gravity="start"
+                            android:hint="Dirección"
+                            android:inputType="textPostalAddress"
+                            android:textAlignment="viewStart"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:id="@+id/tv_city"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="Ciudad"
+                            android:textSize="14sp" />
+
+                        <EditText
+                            android:id="@+id/et_city"
+                            android:layout_width="305dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="12dp"
+                            android:autofillHints="addressCity"
+                            android:backgroundTint="#00BCD4"
+                            android:gravity="start"
+                            android:hint="Ciudad"
+                            android:inputType="text"
+                            android:textAlignment="viewStart"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:id="@+id/tv_country"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="País"
+                            android:textSize="14sp" />
+
+                        <EditText
+                            android:id="@+id/et_country"
+                            android:layout_width="305dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="12dp"
+                            android:autofillHints="countryName"
+                            android:backgroundTint="#00BCD4"
+                            android:gravity="start"
+                            android:hint="País"
+                            android:inputType="text"
+                            android:textAlignment="viewStart"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:id="@+id/tv_phone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="Teléfono"
+                            android:textSize="14sp" />
+
+                        <EditText
+                            android:id="@+id/et_phone"
+                            android:layout_width="305dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="12dp"
+                            android:autofillHints="telephone"
+                            android:backgroundTint="#00BCD4"
+                            android:gravity="start"
+                            android:hint="Teléfono"
+                            android:inputType="phone"
+                            android:textAlignment="viewStart"
+                            android:textSize="22sp" />
+
+                        <Button
+                            android:id="@+id/bt_register"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:backgroundTint="#8BC34A"
+                            android:text="@string/tv_register"
+                            android:textAllCaps="false"
+                            android:textColor="#2A2929"
+                            android:textSize="20sp" />
+
+                </LinearLayout>
 
 
-    <Button
-        android:id="@+id/bt_register"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="#8BC34A"
-        android:text="@string/tv_register"
-        android:textAllCaps="false"
-        android:textColor="#2A2929"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/tv_login_title"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="@+id/tv_login_title"
-        app:layout_constraintTop_toBottomOf="@+id/et_repassword" />
-
+        </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

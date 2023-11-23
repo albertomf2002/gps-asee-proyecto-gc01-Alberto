@@ -60,7 +60,7 @@ class RecordDetail : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         with(binding){
-            videoView.setVideoURI(Uri.parse(video?.uri))
+            videoView.setVideoPath(video?.uri)
         }
     }
 
