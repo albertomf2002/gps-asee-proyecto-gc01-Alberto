@@ -20,6 +20,13 @@ class RecordRegistryAdapter(
         fun bind(video: VideoRecord, totalItems: Int){
             with(binding){
                 uriPath.text = video.uri
+                objectLayout.setOnClickListener{
+                    onClick(video)
+                }
+                objectLayout.setOnLongClickListener{
+                    onLongClick(video)
+                    true
+                }
             }
         }
     }

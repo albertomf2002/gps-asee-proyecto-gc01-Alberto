@@ -19,10 +19,10 @@ import androidx.navigation.ui.setupWithNavController
 
 import es.unex.giiis.asee.tiviclone.R
 import es.unex.giiis.asee.tiviclone.databinding.ActivityHomeBinding
-import es.unex.giiis.asee.tiviclone.data.model.Show
 import es.unex.giiis.asee.tiviclone.data.model.User
+import es.unex.giiis.asee.tiviclone.data.model.VideoRecord
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickListener {
     private lateinit var binding: ActivityHomeBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -78,7 +78,7 @@ class HomeActivity : AppCompatActivity() {
         // Hide toolbar and bottom navigation when in detail fragment
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if ((destination.id == R.id.recordRegistryFragment) ||
-                (/*destination.id == R.id.settingsFragment*/false)){
+                (destination.id == R.id.recordDetail)){
              //   binding.toolbar.visibility = View.GONE
                 binding.toolbar.menu.clear()
                 binding.bottomNavigation.visibility = View.GONE
@@ -129,7 +129,15 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    override fun onShowClick(video: VideoRecord){
+        val action = RecordRegistryFragmentDirections.actionShowRecordDetail2(video)
+        navController.navigate(action)
+    }
     /*
+    override fun onShowClick(show: Show) {
+        val action = DiscoverFragmentDirections.actionDiscoverFragmentToShowDetailFragment(show)
+        navController.navigate(action)
+    }
     override fun onShowClick(show: Show) {
         val action = null
         println("a")

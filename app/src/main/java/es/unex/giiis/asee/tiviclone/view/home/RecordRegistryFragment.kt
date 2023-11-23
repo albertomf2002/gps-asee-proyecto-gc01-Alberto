@@ -1,5 +1,6 @@
 package es.unex.giiis.asee.tiviclone.view.home
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -19,6 +20,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.RuntimeException
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,9 +33,13 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class RecordRegistryFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private lateinit var listener: OnShowClickListener
+
+    interface OnShowClickListener{
+        fun onShowClick(video: VideoRecord)
+    }
+
 
     private lateinit var db: TotalEmergencyDatabase
 
@@ -49,8 +55,15 @@ class RecordRegistryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+        }
+    }
+
+    override fun onAttach(context: android.content.Context) {
+        super.onAttach(context)
+        if(context is OnShowClickListener){
+            listener = context
+        } else {
+            throw RuntimeException(context.toString() + " must implement OnShowClickListener")
         }
     }
 
@@ -84,6 +97,7 @@ class RecordRegistryFragment : Fragment() {
         Log.i("AAA", "DONT CRASH is: " + videos?.size)
         adapter = RecordRegistryAdapter(videos = videos!!,
             onClick = {
+                listener.onShowClick(it)
                 Toast.makeText(context, "click on:" + it.uri, Toast.LENGTH_SHORT).show()
         },
             onLongClick = {

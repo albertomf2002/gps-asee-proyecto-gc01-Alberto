@@ -5,6 +5,7 @@ import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -102,6 +103,14 @@ class EmergencyFragment : Fragment() {
             watchRegistry.setOnClickListener {
                 Log.i("Emergency Fragment", "Navigating to recordRegistry RecyclerView")
                 view?.findNavController()?.navigate(R.id.recordRegistryFragment)
+            }
+
+
+            callButton.setOnClickListener {
+                Log.i("Emergency Fragment", "Starting a call with another phone")
+                val callIntent = Intent(Intent.ACTION_CALL)
+                callIntent.setData(Uri.parse("tel:" +34698296254))
+                startActivity(callIntent)
             }
         }
     }

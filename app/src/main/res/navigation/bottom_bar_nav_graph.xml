@@ -38,5 +38,12 @@
         android:id="@+id/recordDetail"
         android:name="es.unex.giiis.asee.tiviclone.view.home.RecordDetail"
         android:label="fragment_record_detail"
-        tools:layout="@layout/fragment_record_detail" />
+        tools:layout="@layout/fragment_record_detail" >
+        <argument android:name="VideoUri"
+            app:argType="es.unex.giiis.asee.tiviclone.data.model.VideoRecord"
+            app:nullable="true" />
+    </fragment>
+    <action
+        android:id="@+id/action_show_recordDetail2"
+        app:destination="@id/recordDetail" />
 </navigation>
