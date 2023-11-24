@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -18,11 +19,19 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 
 import es.unex.giiis.asee.tiviclone.R
+import es.unex.giiis.asee.tiviclone.data.database.TotalEmergencyDatabase
 import es.unex.giiis.asee.tiviclone.databinding.ActivityHomeBinding
 import es.unex.giiis.asee.tiviclone.data.model.User
 import es.unex.giiis.asee.tiviclone.data.model.VideoRecord
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickListener {
+
+    val scope = CoroutineScope(Job() + Dispatchers.Main)
+    private lateinit var db: TotalEmergencyDatabase
     private lateinit var binding: ActivityHomeBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -34,16 +43,21 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
 
     companion object {
         const val USER_INFO = "USER_INFO"
+        const val USER_COD_INFO = "USER_COD_INFO"
 
         private var my_user:User = User()
+
+        private var userCod:Long = -1
         fun start(
             context: Context,
-            user: User,
+            cod: Long,
         ) {
             val intent = Intent(context, HomeActivity::class.java).apply {
-                putExtra(USER_INFO, user)
+                putExtra(USER_COD_INFO, cod)
             }
-            my_user = user;
+            //my_user = user;
+            userCod = cod;
+            Log.i("API", "el user cod es ${userCod}")
             context.startActivity(intent)
         }
     }
@@ -57,10 +71,18 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val user = intent.getSerializableExtra(USER_INFO) as User
+        //database initialization
+        db = TotalEmergencyDatabase.getInstance(applicationContext)!!
 
-        setUpUI(user)
-        setUpListeners()
+
+
+        scope.launch {
+            my_user = db.userDao().findByCod(userCod)
+            Log.i("User data", "User is retrieved from database")
+
+            setUpUI(my_user)
+            setUpListeners()
+        }
     }
 
     fun setUpUI(user: User) {

@@ -61,6 +61,8 @@ class RecordDetail : Fragment() {
 
         with(binding){
             videoView.setVideoPath(video?.uri)
+            videoView.resume()
+
         }
     }
 

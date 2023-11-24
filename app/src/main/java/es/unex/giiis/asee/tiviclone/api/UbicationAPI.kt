@@ -25,10 +25,8 @@ private val service: TVShowAPI by lazy {
     retrofit.create(TVShowAPI::class.java)
 }
 
-//fun getNetworkService() = service
-
-interface TVShowAPI {
-
+fun getNetworkService() = service
+interface UbicationAPI{
     @GET("most-popular")
     fun getShows(
         @Query("page") page: Int
@@ -40,9 +38,10 @@ interface TVShowAPI {
     ): Call<TvShowDetail>
 }
 
-//class APIError(message: String, cause: Throwable?) : Throwable(message, cause)
 
-//interface APICallback {
-//    fun onCompleted(tvShows:List<TvShow?>)
-//    fun onError(cause: Throwable)
-//}
+class APIError(message: String, cause: Throwable?) : Throwable(message, cause)
+
+interface APICallback {
+    fun onCompleted(tvShows:List<TvShow?>)
+    fun onError(cause: Throwable)
+}

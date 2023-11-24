@@ -22,10 +22,16 @@ import es.unex.giiis.asee.tiviclone.R
 import es.unex.giiis.asee.tiviclone.data.model.User
 import es.unex.giiis.asee.tiviclone.databinding.FragmentHomeMenuBinding
 
+private const val health_care_url = "https://opendata.caceres.es/sparql/?default-graph-uri=&query=SELECT+%3Furi+%3Fgeo_long++%3Fgeo_lat+%3Fcategoria+%3Frdfs_label+%3FtieneEnlaceSIG+%3Fschema_url++WHERE+%7B+%0D%0A%3Furi+a+cts%3Acentros.+%0D%0AOPTIONAL++%7B%3Furi+geo%3Along+%3Fgeo_long.+%7D%0D%0AOPTIONAL++%7B%3Furi+geo%3Alat+%3Fgeo_lat.+%7D%0D%0AOPTIONAL++%7B%3Furi+cts%3Acategoria+%3Fcategoria.+%7D%0D%0AOPTIONAL++%7B%3Furi+cts%3Anombre+%3Frdfs_label.+%7D%0D%0AOPTIONAL++%7B%3Furi+cts%3AurlSig+%3FtieneEnlaceSIG.+%7D%0D%0AOPTIONAL++%7B%3Furi+cts%3AurlWeb+%3Fschema_url.+%7D.%0D%0A%7D&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on"
+
 class HomeMenuFragment : Fragment() {
+
+
 
     private var _binding: FragmentHomeMenuBinding? = null
     private val binding get() = _binding!!
+
+
 
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -37,6 +43,8 @@ class HomeMenuFragment : Fragment() {
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
+
+
         val caceres = LatLng(39.4743, -6.3710)
         googleMap.addMarker(MarkerOptions().position(caceres).title("Marker in caceres"))
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(caceres))

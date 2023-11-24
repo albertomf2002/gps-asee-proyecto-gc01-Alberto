@@ -4,18 +4,23 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
+import es.unex.giiis.asee.tiviclone.data.database.TotalEmergencyDatabase
 
 import es.unex.giiis.asee.tiviclone.databinding.ActivityLoginBinding
 import es.unex.giiis.asee.tiviclone.data.model.User
 import es.unex.giiis.asee.tiviclone.util.CredentialCheck
 import es.unex.giiis.asee.tiviclone.view.home.HomeActivity
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
+    private lateinit var db: TotalEmergencyDatabase
 
     private val responseLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -45,6 +50,9 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //database initialization
+        db = TotalEmergencyDatabase.getInstance(applicationContext)!!
+
         //views initialization and listeners
         setUpUI()
         setUpListeners()
@@ -73,10 +81,7 @@ class LoginActivity : AppCompatActivity() {
         with(binding) {
 
             btLogin.setOnClickListener {
-                val check = CredentialCheck.login(etUsername.text.toString(), etPassword.text.toString())
-
-                if (check.fail) notifyInvalidCredentials(check.msg)
-                else navigateToHomeActivity(User(etUsername.text.toString(), etPassword.text.toString()), check.msg)
+                checkLogin()
             }
 
             btRegister.setOnClickListener {
@@ -89,9 +94,31 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun navigateToHomeActivity(user: User, msg: String) {
+    private fun checkLogin() {
+        val check = CredentialCheck.login(binding.etUsername.text.toString(), binding.etPassword.text.toString())
+        if (!check.fail) {
+            lifecycleScope.launch {
+                val codUser = db?.userDao()?.findByLogin(binding.etUsername.text.toString(), binding.etPassword.text.toString())
+
+                if (codUser != null) {
+                    if(check.fail) {
+                        notifyInvalidCredentials(check.msg)
+                    }else {
+                        Log.i("User data", "User cod is retrieved: " + codUser)
+                        navigateToHomeActivity(codUser, check.msg)
+                    }
+                }
+                else
+                    notifyInvalidCredentials("Invalid username")
+            }
+        }
+        else
+            notifyInvalidCredentials(check.msg)
+    }
+
+    private fun navigateToHomeActivity(codUser: Long, msg: String) {
        // Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-        HomeActivity.start(this, user)
+        HomeActivity.start(this, codUser)
     }
 
     private fun navigateToJoin() {
