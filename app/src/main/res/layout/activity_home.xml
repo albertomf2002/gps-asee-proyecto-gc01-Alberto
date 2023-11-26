@@ -31,13 +31,12 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="@android:color/holo_blue_light"
         android:elevation="4dp"
-        android:theme="@style/Toolbar"
         android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:theme="@style/Toolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:menu="@menu/toolbar_home"
-        />
+        app:menu="@menu/toolbar_home" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

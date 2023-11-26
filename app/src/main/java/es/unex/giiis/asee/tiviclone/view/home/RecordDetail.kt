@@ -1,7 +1,13 @@
 package es.unex.giiis.asee.tiviclone.view.home
 
+import android.content.Context
+import android.database.Cursor
+import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.DocumentsContract
+import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +17,7 @@ import androidx.navigation.fragment.navArgs
 import es.unex.giiis.asee.tiviclone.R
 import es.unex.giiis.asee.tiviclone.data.model.VideoRecord
 import es.unex.giiis.asee.tiviclone.databinding.FragmentRecordDetailBinding
+import java.io.File
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,6 +35,8 @@ class RecordDetail : Fragment() {
     private val binding get() = _binding!!
 
     private var video: VideoRecord? = null
+
+    private var uri: Uri? = null
 
     private val args: RecordDetailArgs by navArgs()
 
@@ -49,20 +58,122 @@ class RecordDetail : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         video = args.VideoUri
-        Log.i("URI:", "The uri data is checked")
+        uri = Uri.parse(video?.uri)
+        Log.i("URI:", "The uri data ${uri} is checked")
+        Log.i("URI:", "The uri authority is: ${uri?.authority}")
 
         _binding = FragmentRecordDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
 
+    fun justGonnaTry(): String? {
+        val projection = arrayOf(MediaStore.Video.Media.DATA)
+        val cursor = context?.contentResolver?.query(uri!!, projection, null, null, null)
+        cursor?.use {
+            Log.i("Cursor", "Trying to fetch the data")
+            if(it.moveToFirst()){
+                val columnIndex = it.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)
+                return it.getString(columnIndex)
+            }
+        }
+        return null
+    }
+    private fun iterateMediaFiles() {
+        val projection = arrayOf(
+            MediaStore.Video.Media._ID,
+            MediaStore.Video.Media.DISPLAY_NAME,
+            MediaStore.Video.Media.DATA,
+            MediaStore.Video.Media.SIZE,
+            MediaStore.Video.Media.DATE_ADDED
+        )
+
+        val cursor = context?.contentResolver?.query(
+            MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+            projection,
+            null,
+            null,
+            null
+        )
+
+        cursor?.use { cursor ->
+            Log.i("CURSOR", "Iteration")
+            while (cursor.moveToNext()) {
+                val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID))
+                val displayName =
+                    cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME))
+                val data =
+                    cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))
+                val size =
+                    cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE))
+                val dateAdded =
+                    cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED))
+
+                Log.d(
+                    "TRY", "Video - ID: $id, Name: $displayName, Path: $data, Size: $size, Date Added: $dateAdded"
+                )
+            }
+        }
+    }
+    fun getRealPath(): String?{
+
+        val isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+        if(isKitKat){
+            Log.i("KITKAT", "API SDK is higher than KitKat")
+            val docId = DocumentsContract.getDocumentId(uri)
+            val split = docId.split(":")
+            val type = split[0]
+            Log.i("KITKAT", "API SDK is higher than KitKat")
+
+            var contentUri:Uri? = null
+
+            if("video".equals(type)){
+                contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+            }
+
+            val selection = "_id=?"
+            val selectionArgs = arrayOf<String>(split[1])
+
+            return getDataColumn(selection, selectionArgs)
+        }
+        Log.i("TAG", "PASSED KIT KAT")
+        return "AAA"
+    }
+
+    fun getDataColumn(selection: String, selectionArgs: Array<String>) : String?{
+
+        val column = "_data"
+        var cursor : Cursor? = null
+        val projection = arrayOf(column)
+
+        Log.i("Cursor", "Trying to open cursor")
+        try {
+            cursor = context?.contentResolver?.query(uri!!, projection, selection, selectionArgs, null)
+            if(cursor != null && cursor.moveToFirst()){
+                val column_index = cursor.getColumnIndexOrThrow(column)
+                Log.i("Cursor", "The cursor path is: ${cursor.getString(column_index)}")
+                return cursor.getString(column_index)
+            }
+            Log.i("Cursor", "Failed to fetch video")
+        } finally {
+            if (cursor != null){
+                cursor.close()
+            }
+        }
+        return null
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        with(binding){
-            videoView.setVideoPath(video?.uri)
-            videoView.resume()
+        iterateMediaFiles()
+        val path = justGonnaTry()
+        Log.i("PATH", "The path is: ${path}")
+        //var mediaPlayer = MediaPlayer.create(context, uri)
 
+        with(binding){
+            //videoView.setVideoURI(uri)
+            videoView.setVideoPath(path)
+            videoView.start()
         }
     }
 

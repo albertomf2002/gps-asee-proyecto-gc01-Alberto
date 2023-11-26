@@ -109,7 +109,7 @@ class EmergencyFragment : Fragment() {
             callButton.setOnClickListener {
                 Log.i("Emergency Fragment", "Starting a call with another phone")
                 val callIntent = Intent(Intent.ACTION_CALL)
-                callIntent.setData(Uri.parse("tel:" +34698296254))
+                callIntent.data = Uri.parse("tel:" + 123456789)
                 startActivity(callIntent)
             }
         }

@@ -19,11 +19,31 @@
 
             <TextView
                 android:id="@+id/uriPath"
-                android:layout_width="193dp"
-                android:layout_height="122dp"
+                android:layout_width="220dp"
+                android:layout_height="70dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
                 android:text="Video"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="@+id/filePath"
+                app:layout_constraintTop_toBottomOf="@+id/filePath" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="60dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/filePath"
+                app:srcCompat="@drawable/baseline_video_library_24" />
+
+            <TextView
+                android:id="@+id/filePath"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Path:"
+                tools:layout_editor_absoluteX="-2dp"
+                tools:layout_editor_absoluteY="0dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -55,7 +55,11 @@ class ProfileFragment : Fragment() {
 
 
         with(binding){
-            UsernameText.text = "AAA: ${user.name} BBB"
+            UsernameTextShow.text = "- ${user.userName}"
+            NameTextShow.text = "- ${user.name}"
+            LastnameTextShow.text = "- ${user.lastName}"
+            EmailTextShow.text = "- ${user.email}"
+
         }
     }
 

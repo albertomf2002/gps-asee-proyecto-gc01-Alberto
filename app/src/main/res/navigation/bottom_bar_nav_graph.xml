@@ -7,13 +7,13 @@
     <fragment
         android:id="@+id/homeMenuFragment"
         android:name="es.unex.giiis.asee.tiviclone.view.home.HomeMenuFragment"
-        android:label="fragment_home_menu"
+        android:label="Mapa"
         tools:layout="@layout/fragment_home_menu" />
     <fragment
         android:id="@+id/profileFragment"
         android:name="es.unex.giiis.asee.tiviclone.view.home.ProfileFragment"
-        android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" >
+        android:label="Perfil"
+        tools:layout="@layout/fragment_profile">
         <argument
             android:name="userData"
             app:argType="es.unex.giiis.asee.tiviclone.data.model.User" />
@@ -21,8 +21,8 @@
     <fragment
         android:id="@+id/emergencyFragment"
         android:name="es.unex.giiis.asee.tiviclone.view.home.EmergencyFragment"
-        android:label="fragment_emergency"
-        tools:layout="@layout/fragment_emergency" >
+        android:label="Emergencias"
+        tools:layout="@layout/fragment_emergency">
         <action
             android:id="@+id/action_emergencyFragment_to_recordRegistryFragment"
             app:destination="@id/recordRegistryFragment"
@@ -32,14 +32,15 @@
     <fragment
         android:id="@+id/recordRegistryFragment"
         android:name="es.unex.giiis.asee.tiviclone.view.home.RecordRegistryFragment"
-        android:label="fragment_record_registry"
+        android:label="Listado de emergencias"
         tools:layout="@layout/fragment_record_registry" />
     <fragment
         android:id="@+id/recordDetail"
         android:name="es.unex.giiis.asee.tiviclone.view.home.RecordDetail"
-        android:label="fragment_record_detail"
-        tools:layout="@layout/fragment_record_detail" >
-        <argument android:name="VideoUri"
+        android:label="Video emergencias"
+        tools:layout="@layout/fragment_record_detail">
+        <argument
+            android:name="VideoUri"
             app:argType="es.unex.giiis.asee.tiviclone.data.model.VideoRecord"
             app:nullable="true" />
     </fragment>
