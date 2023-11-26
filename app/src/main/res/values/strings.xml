@@ -11,10 +11,11 @@
     <string name="greeting">Hello, %s!</string>
     <string name="map_option">Map menu</string>
     <string name="profile">Profile</string>
+    <string name="contacts">Contactos</string>
     <string name="emergency">Emergency</string>
     <!-- Centros sanitarios URL -->
     <string name="health_center_url">https://opendata.caceres.es/sparql/?default-graph-uri=&amp;query=SELECT+%3Furi+%3Fgeo_long++%3Fgeo_lat+%3Fcategoria+%3Frdfs_label+%3FtieneEnlaceSIG+%3Fschema_url++WHERE+%7B+%0D%0A%3Furi+a+cts%3Acentros.+%0D%0AOPTIONAL++%7B%3Furi+geo%3Along+%3Fgeo_long.+%7D%0D%0AOPTIONAL++%7B%3Furi+geo%3Alat+%3Fgeo_lat.+%7D%0D%0AOPTIONAL++%7B%3Furi+cts%3Acategoria+%3Fcategoria.+%7D%0D%0AOPTIONAL++%7B%3Furi+cts%3Anombre+%3Frdfs_label.+%7D%0D%0AOPTIONAL++%7B%3Furi+cts%3AurlSig+%3FtieneEnlaceSIG.+%7D%0D%0AOPTIONAL++%7B%3Furi+cts%3AurlWeb+%3Fschema_url.+%7D.%0D%0A%7D&amp;format=application%2Fsparql-results%2Bjson&amp;timeout=0&amp;debug=on</string>
-    
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="fragment_profile">Perfil</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -23,5 +23,5 @@ interface VideoRecordDAO {
     suspend fun insert(video: VideoRecord): Long
 
     @Query("DELETE FROM VideoRecord WHERE videoId = :first")
-    suspend fun delete(first: Long)
+    suspend fun deleteFromId(first: Long)
 }

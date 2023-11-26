@@ -13,10 +13,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import es.unex.giiis.asee.tiviclone.R
+import es.unex.giiis.asee.tiviclone.data.database.TotalEmergencyDatabase
 import es.unex.giiis.asee.tiviclone.data.model.VideoRecord
 import es.unex.giiis.asee.tiviclone.databinding.FragmentRecordDetailBinding
+import kotlinx.coroutines.launch
 import java.io.File
 
 // TODO: Rename parameter arguments, choose names that match
@@ -172,8 +175,32 @@ class RecordDetail : Fragment() {
 
         with(binding){
             //videoView.setVideoURI(uri)
-            videoView.setVideoPath(path)
-            videoView.start()
+            val db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
+
+            if(path == null){
+                lifecycleScope.launch {
+                    db.videoDAO().deleteFromId(video?.videoId!!)
+                }
+            }else {
+                videoView.setVideoPath(path)
+                videoView.start()
+            }
+
+            eliminarVideo.setOnClickListener {
+                lifecycleScope.launch {
+                    val fdelete = File(path)
+                    if (fdelete.exists()) //Should be always true
+                    {
+                        Log.i("DELETE", "Video is being deleted")
+                        fdelete.delete()
+
+
+                        db.videoDAO().deleteFromId(video?.videoId!!)
+                    }else{
+                        Log.i("DELETE", "Video cant be deleted")
+                    }
+                }
+            }
         }
     }
 

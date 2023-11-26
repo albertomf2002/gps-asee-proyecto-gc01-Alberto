@@ -2,6 +2,7 @@ package es.unex.giiis.asee.tiviclone.view.home
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -20,6 +21,7 @@ import androidx.navigation.ui.setupWithNavController
 
 import es.unex.giiis.asee.tiviclone.R
 import es.unex.giiis.asee.tiviclone.data.database.TotalEmergencyDatabase
+import es.unex.giiis.asee.tiviclone.data.model.Contact
 import es.unex.giiis.asee.tiviclone.databinding.ActivityHomeBinding
 import es.unex.giiis.asee.tiviclone.data.model.User
 import es.unex.giiis.asee.tiviclone.data.model.VideoRecord
@@ -28,7 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickListener {
+class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickListener, ContactsFragment.OnShowClickListener {
 
     val scope = CoroutineScope(Job() + Dispatchers.Main)
     private lateinit var db: TotalEmergencyDatabase
@@ -57,6 +59,7 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
             }
             //my_user = user;
             userCod = cod;
+
             Log.i("API", "el user cod es ${userCod}")
             context.startActivity(intent)
         }
@@ -68,8 +71,12 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         //database initialization
         db = TotalEmergencyDatabase.getInstance(applicationContext)!!
@@ -89,8 +96,10 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
         binding.bottomNavigation.setupWithNavController(navController)
             appBarConfiguration = AppBarConfiguration(
                 setOf(
+                    R.id.recordRegistryFragment,
                     R.id.homeMenuFragment,
                     R.id.profileFragment,
+                    R.id.contactsFragment,
                     R.id.emergencyFragment
                 )
             )
@@ -154,6 +163,22 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
     override fun onShowClick(video: VideoRecord){
         val action = RecordRegistryFragmentDirections.actionShowRecordDetail2(video)
         navController.navigate(action)
+    }
+
+    override fun onShowClickCall(contact: Contact){
+        Log.i("CALL", "Starting a call with another phone")
+        val callIntent = Intent(Intent.ACTION_CALL)
+        callIntent.data = Uri.parse("tel:" + contact.telephone)
+        startActivity(callIntent)
+    }
+
+    override fun onDeleteClickCall(contact: Contact) {
+        if (contact.contactId != null) {
+            scope.launch {
+                Log.i("CALL", "Deleting the phone id")
+                db.contactDAO().deleteFromId(contact.contactId!!)
+            }
+        }
     }
     /*
     override fun onShowClick(show: Show) {

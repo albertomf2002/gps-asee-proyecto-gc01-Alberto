@@ -9,10 +9,21 @@
 
     <VideoView
         android:id="@+id/videoView"
-        android:layout_width="300dp"
-        android:layout_height="573dp"
+        android:layout_width="273dp"
+        android:layout_height="525dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/eliminarVideo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#3BBAFF"
+        android:text="Eliminar video"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/videoView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

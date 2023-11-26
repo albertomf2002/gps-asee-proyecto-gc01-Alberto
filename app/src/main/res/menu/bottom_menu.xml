@@ -11,8 +11,23 @@
     <item
         android:id="@+id/emergencyFragment"
         android:enabled="true"
-        android:icon="@drawable/baseline_call_24"
+        android:icon="@drawable/baseline_dangerous_24"
         android:title="@string/emergency"
+        app:showAsAction="ifRoom"
+        />
+
+    <item
+        android:id="@+id/contactsFragment"
+        android:enabled="true"
+        android:icon="@drawable/baseline_call_24"
+        android:title="@string/contacts"
+        app:showAsAction="ifRoom"
+        />
+    <item
+        android:id="@+id/recordRegistryFragment"
+        android:enabled="true"
+        android:icon="@drawable/baseline_ondemand_video_24"
+        android:title="@string/contacts"
         app:showAsAction="ifRoom"
         />
 

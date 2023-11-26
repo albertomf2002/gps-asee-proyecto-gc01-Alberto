@@ -11,6 +11,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+
+/*
 private val service: TVShowAPI by lazy {
     val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(HttpLoggingInterceptor())
@@ -22,8 +24,10 @@ private val service: TVShowAPI by lazy {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    retrofit.create(TVShowAPI::class.java)
+    //retrofit.create(TVShowAPI::class.java)
 }
+*/
+
 
 //fun getNetworkService() = service
 

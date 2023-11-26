@@ -90,7 +90,7 @@ class EmergencyFragment : Fragment() {
 
         with(binding){
             //emergencyButton.onKeyLongPress(3)
-            emergencyButton.setOnClickListener {
+            emergency.setOnClickListener {
                 if(isFrontCameraPresent()) {
                     Log.i("suceso", "hay acceso a la cámara")
                     val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
@@ -98,19 +98,6 @@ class EmergencyFragment : Fragment() {
                 }else{
                     Log.e("error", "No hay acceso a la cámara")
                 }
-            }
-
-            watchRegistry.setOnClickListener {
-                Log.i("Emergency Fragment", "Navigating to recordRegistry RecyclerView")
-                view?.findNavController()?.navigate(R.id.recordRegistryFragment)
-            }
-
-
-            callButton.setOnClickListener {
-                Log.i("Emergency Fragment", "Starting a call with another phone")
-                val callIntent = Intent(Intent.ACTION_CALL)
-                callIntent.data = Uri.parse("tel:" + 123456789)
-                startActivity(callIntent)
             }
         }
     }
