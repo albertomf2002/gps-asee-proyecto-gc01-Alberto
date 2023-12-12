@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_bar_nav_graph"
+    app:startDestination="@id/homeMenuFragment">
+    <fragment
+        android:id="@+id/homeMenuFragment"
+        android:name="es.unex.giiis.asee.totalmergency.view.home.HomeMenuFragment"
+        android:label="Mapa"
+        tools:layout="@layout/fragment_home_menu" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="es.unex.giiis.asee.totalmergency.view.home.ProfileFragment"
+        android:label="Perfil"
+        tools:layout="@layout/fragment_profile">
+        <argument
+            android:name="userData"
+            app:argType="es.unex.giiis.asee.totalmergency.data.model.User" />
+    </fragment>
+    <fragment
+        android:id="@+id/emergencyFragment"
+        android:name="es.unex.giiis.asee.totalmergency.view.home.EmergencyFragment"
+        android:label="Emergencias"
+        tools:layout="@layout/fragment_emergency">
+        <action
+            android:id="@+id/action_emergencyFragment_to_recordRegistryFragment"
+            app:destination="@id/recordRegistryFragment"
+            app:launchSingleTop="false"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/recordRegistryFragment"
+        android:name="es.unex.giiis.asee.totalmergency.view.home.RecordRegistryFragment"
+        android:label="Listado de emergencias"
+        tools:layout="@layout/fragment_record_registry" />
+    <fragment
+        android:id="@+id/recordDetail"
+        android:name="es.unex.giiis.asee.totalmergency.view.home.RecordDetail"
+        android:label="Video emergencias"
+        tools:layout="@layout/fragment_record_detail">
+        <argument
+            android:name="VideoUri"
+            app:argType="es.unex.giiis.asee.totalmergency.data.model.VideoRecord"
+            app:nullable="true" />
+    </fragment>
+    <action
+        android:id="@+id/action_show_recordDetail2"
+        app:destination="@id/recordDetail" />
+    <fragment
+        android:id="@+id/contactsFragment"
+        android:name="es.unex.giiis.asee.totalmergency.view.home.ContactsFragment"
+        android:label="Contactos"
+        tools:layout="@layout/fragment_contacts" />
+    <fragment
+        android:id="@+id/profileUpdaterFragment"
+        android:name="es.unex.giiis.asee.totalmergency.view.home.ProfileUpdaterFragment"
+        android:label="fragment_profile_updater"
+        tools:layout="@layout/fragment_profile_updater" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="es.unex.giiis.asee.totalmergency.view.home.SettingsFragment"
+        android:label="SettingsFragment" />
+    <action
+        android:id="@+id/home_to_settings"
+        app:destination="@id/settingsFragment" />
+</navigation>

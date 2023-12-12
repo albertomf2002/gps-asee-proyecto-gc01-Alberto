@@ -1,0 +1,60 @@
+<resources>
+    <string name="app_name">TotalEmergency</string>
+    <string name="user_string">user</string>
+    <string name="password_string">password</string>
+    <string name="tv_login">login</string>
+    <string name="valid_user_msg">Credentials valid!</string>
+    <string name="invalid_user_msg">Credentials no valid</string>
+    <string name="tv_register">join</string>
+    <string name="repeat_password">repeat password</string>
+    <string name="visit_website">trakt.tv</string>
+    <string name="greeting">Hello, %s!</string>
+    <string name="map_option">Map menu</string>
+    <string name="profile">Profile</string>
+    <string name="contacts">Contactos</string>
+    <string name="registers">Registros</string>
+    <string name="emergency">Emergency</string>
+    <!-- Centros sanitarios URL -->
+    <string name="health_center_url">https://opendata.caceres.es/sparql/?default-graph-uri=&amp;query=SELECT+%3Furi+%3Fgeo_long++%3Fgeo_lat+%3Fcategoria+%3Frdfs_label+%3FtieneEnlaceSIG+%3Fschema_url++WHERE+%7B+%0D%0A%3Furi+a+cts%3Acentros.+%0D%0AOPTIONAL++%7B%3Furi+geo%3Along+%3Fgeo_long.+%7D%0D%0AOPTIONAL++%7B%3Furi+geo%3Alat+%3Fgeo_lat.+%7D%0D%0AOPTIONAL++%7B%3Furi+cts%3Acategoria+%3Fcategoria.+%7D%0D%0AOPTIONAL++%7B%3Furi+cts%3Anombre+%3Frdfs_label.+%7D%0D%0AOPTIONAL++%7B%3Furi+cts%3AurlSig+%3FtieneEnlaceSIG.+%7D%0D%0AOPTIONAL++%7B%3Furi+cts%3AurlWeb+%3Fschema_url.+%7D.%0D%0A%7D&amp;format=application%2Fsparql-results%2Bjson&amp;timeout=0&amp;debug=on</string>
+
+    <!-- FRAGMENT PROFILE -->
+    <string name="modify_account">Modificar cuenta</string>
+    <string name="username_profile">Nombre de usuario:</string>
+    <string name="name_profile">Nombre:</string>
+    <string name="lastname_profile">Apellidos:</string>
+    <string name="email_profile">Correo electrónico:</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="fragment_profile">Perfil</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="action_search">search</string>
+    <string name="action_settings">settings</string>
+    <string name="login_library">login to store your library</string>
+    <!-- Preference Titles -->
+    <string name="login_header">Autologin</string>
+    <string name="sorting_header">Sorting</string>
+
+    <!-- Login Preferences -->
+    <string name="autologin_title">Remember me (autologin)</string>
+    <string name="username_title">Username</string>
+    <string name="password_title">Password</string>
+
+    <!-- Sorting Preferences -->
+    <string name="sorting_title">Sorting enabled</string>
+    <string name="criteria_title">Sorting criteria</string>
+
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+</resources>
