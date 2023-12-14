@@ -14,8 +14,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import es.unex.giiis.asee.totalemergency.view.home.RecordDetailViewModel
 import es.unex.giiis.asee.totalmergency.R
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
 import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
@@ -39,22 +41,15 @@ class RecordDetail : Fragment() {
     private var _binding: FragmentRecordDetailBinding? = null
     private val binding get() = _binding!!
 
-    private var video: VideoRecord? = null
-
-    //private var uri: Uri? = null
-    private var path: String? = null
+    private val viewModel : RecordDetailViewModel by viewModels { RecordDetailViewModel.Factory }
 
     private val args: RecordDetailArgs by navArgs()
 
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
         }
     }
 
@@ -63,9 +58,9 @@ class RecordDetail : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        video = args.VideoUri
-        path = video?.path
-        Log.i("PATH:", "The path data ${path} is checked")
+        viewModel.video = args.VideoUri
+        viewModel.path = viewModel.video?.path
+
 
         _binding = FragmentRecordDetailBinding.inflate(inflater, container, false)
         return binding.root
@@ -74,26 +69,23 @@ class RecordDetail : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.i("PATH", "The path is: ${path}")
-        //var mediaPlayer = MediaPlayer.create(context, uri)
-
         with(binding){
             //videoView.setVideoURI(uri)
             val db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
 
-            if(path == null){
+            if(viewModel.path == null){
                 lifecycleScope.launch {
                     //db.videoDAO().deleteFromId(video?.videoId!!)
                 }
             }else {
-                videoView.setVideoPath(path)
+                videoView.setVideoPath(viewModel.path)
                 videoView.start()
             }
 
             eliminarVideo.setOnClickListener {
                 videoView.stopPlayback()
 
-                val fdelete = File(path!!)
+                val fdelete = File(viewModel.path!!)
                 try {
                     //fdelete.delete()
                     //FileUtils.forceDelete(fdelete)
