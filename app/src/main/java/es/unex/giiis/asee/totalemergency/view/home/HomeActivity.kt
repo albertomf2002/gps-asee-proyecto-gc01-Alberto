@@ -9,7 +9,9 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavArgument
 import androidx.navigation.NavArgumentBuilder
 import androidx.navigation.NavType
@@ -18,6 +20,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
 
 import es.unex.giiis.asee.totalmergency.R
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
@@ -31,6 +34,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickListener, ContactsFragment.OnShowClickListener {
+
+    //Factory necesaria para recuperar usuario
+    private val viewModel : HomeViewModel by viewModels { HomeViewModel.Factory }
 
     val scope = CoroutineScope(Job() + Dispatchers.Main)
     private lateinit var db: TotalEmergencyDatabase
@@ -57,7 +63,7 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
             val intent = Intent(context, HomeActivity::class.java).apply {
                 putExtra(USER_COD_INFO, cod)
             }
-            //my_user = user;
+
             userCod = cod;
 
             Log.i("API", "el user cod es ${userCod}")
@@ -71,8 +77,6 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
 
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
