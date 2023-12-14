@@ -94,6 +94,8 @@ class HomeMenuFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.i("OnViewCreated", "Creating view")
 
+
+
         val appContainer = (this.activity?.application as TotalEmergencyApplication).appContainer
         repository = appContainer.repository
 
