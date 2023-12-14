@@ -8,10 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
+import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
 import es.unex.giiis.asee.totalmergency.R
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
 import es.unex.giiis.asee.totalmergency.data.model.User
@@ -31,6 +33,10 @@ private const val TAG = "ProfileFragment"
  */
 class ProfileFragment : Fragment() {
 
+    private val homeViewModel: HomeViewModel by activityViewModels()
+
+    private lateinit var user: User
+
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
@@ -38,7 +44,6 @@ class ProfileFragment : Fragment() {
 
     private lateinit var db : TotalEmergencyDatabase
 
-    private var user:User = User()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -52,8 +57,9 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val parentActivity = (activity as HomeActivity)
-        user = parentActivity.getUser()
+        homeViewModel.user.observe(viewLifecycleOwner) { us ->
+            user = us
+        }
 
         db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
 
