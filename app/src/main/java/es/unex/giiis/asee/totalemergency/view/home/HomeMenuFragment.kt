@@ -101,8 +101,6 @@ class HomeMenuFragment : Fragment() {
 
 
         updateMapUI()
-        launchDataLoad { repository.tryUpdateRecentLocationCache() }
-
 
         Log.i("OnViewCreated", "EL RESULTADO ES: ${listadoCentrosSalud}")
         Log.i("OnViewCreated", "View finished")
@@ -116,18 +114,6 @@ class HomeMenuFragment : Fragment() {
             val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
 
             mapFragment?.getMapAsync(callback)
-        }
-    }
-
-    private fun launchDataLoad(block: suspend () -> Unit): Job {
-        return lifecycleScope.launch {
-            try{
-                block()
-            } catch (error: APIError){
-                Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
-            } finally {
-
-            }
         }
     }
 
