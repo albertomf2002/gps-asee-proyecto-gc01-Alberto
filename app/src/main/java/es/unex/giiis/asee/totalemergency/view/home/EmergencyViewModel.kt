@@ -21,36 +21,8 @@ class EmergencyViewModel (
 ) : ViewModel() {
     var user: User? = null
 
-    private val _spinner = MutableLiveData<Boolean>()
-    val spinner: LiveData<Boolean>
-        get() = _spinner
-
-    private val _toast = MutableLiveData<String?>()
-
-    val toast: LiveData<String?>
-        get() = _toast
-
-
     init {
 
-    }
-
-/*
-    private fun launchDataLoad(block: suspend () -> Unit): Job {
-        return viewModelScope.launch {
-            try {
-                _spinner.value = true
-                block()
-            } catch (error: APIError) {
-                _toast.value = error.message
-            } finally {
-                _spinner.value = false
-            }
-        }
-    }*/
-
-    fun onToastShown() {
-        _toast.value = null
     }
 
     fun insertVideo(vr : VideoRecord){
