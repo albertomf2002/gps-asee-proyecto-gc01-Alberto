@@ -7,6 +7,7 @@ import es.unex.giiis.asee.totalemergency.data.database.dao.UserDAO
 import es.unex.giiis.asee.totalemergency.data.database.dao.VideoRecordDAO
 import es.unex.giiis.asee.totalmergency.api.APIError
 import es.unex.giiis.asee.totalmergency.api.UbicationAPI
+import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
 import es.unex.giiis.asee.totalmergency.data.toLoc
 
 
@@ -20,6 +21,10 @@ class Repository (
     private var lastUpdateTimeMillis: Long = 0L
 
     val localizaciones = localizacionesDao.getAllUbications()
+
+    suspend fun insertVideo(vr : VideoRecord){
+        videoRecordDao.insert(vr)
+    }
 
     suspend fun tryUpdateRecentLocationCache() {
         if (shouldUpdateLocationCache()) fetchRecentUbications()

@@ -18,6 +18,8 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
+import es.unex.giiis.asee.totalemergency.view.home.EmergencyViewModel
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
 import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
 import es.unex.giiis.asee.totalmergency.databinding.FragmentEmergencyBinding
@@ -41,9 +43,7 @@ class EmergencyFragment : Fragment() {
     private var _binding: FragmentEmergencyBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var db: TotalEmergencyDatabase
-
-    val scope = CoroutineScope(Job() + Dispatchers.Main)
+    private val viewModel : EmergencyViewModel by viewModels { EmergencyViewModel.Factory }
 
     private val responseCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
@@ -61,9 +61,9 @@ class EmergencyFragment : Fragment() {
                 Log.i("DATE TIME", "The date is: ${dateTime}")
 
                 val vr = VideoRecord(videoId= null, path= "$path", userId= (activity as HomeActivity).getUser().cod!!, date=dateTime)
-                scope.launch {
-                    insertNewVideo(vr)
-                }
+
+                viewModel.insertVideo(vr)
+
             }else if(result.resultCode == RESULT_CANCELED){
                 Log.i("VIDEO_RECORD_TAG", "Video recording is cancelled")
             }else{
@@ -76,7 +76,6 @@ class EmergencyFragment : Fragment() {
         arguments?.let {
 
         }
-        scope
         if(isFrontCameraPresent()){
             Log.i("notice", "Camera is detected")
             getCameraPermission()
@@ -97,8 +96,6 @@ class EmergencyFragment : Fragment() {
         // Inflate the layout for this fragment
 
         _binding = FragmentEmergencyBinding.inflate(inflater, container, false)
-
-        db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
 
         return binding.root
     }
@@ -133,7 +130,7 @@ class EmergencyFragment : Fragment() {
             emergency.setOnClickListener {
                 if (isFrontCameraPresent()) {
                     Log.i("suceso", "hay acceso a la cámara")
-                    //TODO: Añadir -> Hora, minutos y segundos al momento que fue grabado.  EL TIEMPO DEBE SER ANTES DE GRABAR
+
                     val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
                     responseCamera.launch(intent)
                     //startActivityForResult(intent, 101)
@@ -162,9 +159,6 @@ class EmergencyFragment : Fragment() {
 
     }
 
-    private suspend fun insertNewVideo(vr: VideoRecord){
-        db.videoDAO().insert(vr)
-    }
 
     companion object {
         /**
