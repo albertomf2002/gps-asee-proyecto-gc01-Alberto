@@ -9,5 +9,4 @@ class AppContainer(context: Context?) {
     private val networkService = getNetworkService()
     private val db = TotalEmergencyDatabase.getInstance(context!!)
     val repository = Repository(db!!.localizacionesDao(),db.userDao(),db.contactDAO(),db.videoDAO(),networkService)
-
 }

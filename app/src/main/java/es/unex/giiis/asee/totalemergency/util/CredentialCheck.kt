@@ -14,22 +14,22 @@ class CredentialCheck private constructor() {
         private val checks = arrayOf(
             CredentialCheck().apply {
                 fail = false
-                msg = "Your credentials are OK"
+                msg = CredentialMessage.CREDENTIALS_OK.message
                 error = CredentialError.Success
             },
             CredentialCheck().apply {
                 fail = true
-                msg = "Invalid username"
+                msg = CredentialMessage.INVALID_USERNAME.message
                 error = CredentialError.UsernameError
             },
             CredentialCheck().apply {
                 fail = true
-                msg = "Invalid password"
+                msg = CredentialMessage.INVALID_PASSWORD.message
                 error = CredentialError.PasswordError
             },
             CredentialCheck().apply {
                 fail = true
-                msg = "Passwords do not match"
+                msg = CredentialMessage.PASSWORDS_NOT_MATCH.message
                 error = CredentialError.PasswordError
             }
 
@@ -52,4 +52,12 @@ class CredentialCheck private constructor() {
     enum class CredentialError {
         PasswordError, UsernameError, Success
     }
+
+    enum class CredentialMessage(val message: String) {
+        CREDENTIALS_OK("Your credentials are OK"),
+        INVALID_USERNAME("Invalid username"),
+        INVALID_PASSWORD("Invalid password"),
+        PASSWORDS_NOT_MATCH("Passwords do not match")
+    }
+
 }

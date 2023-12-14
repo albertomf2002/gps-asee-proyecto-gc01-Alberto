@@ -98,10 +98,10 @@ class RecordRegistryFragment : Fragment() {
         adapter = RecordRegistryAdapter(videos = videos!!,
             onClick = {
                 listener.onShowClick(it)
-                Toast.makeText(context, "click on:" + it.uri, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "click on:" + it.path, Toast.LENGTH_SHORT).show()
         },
             onLongClick = {
-               Toast.makeText(context, "long click on:" + it.uri, Toast.LENGTH_SHORT).show()
+               Toast.makeText(context, "long click on:" + it.path, Toast.LENGTH_SHORT).show()
         })
 
         with(binding){

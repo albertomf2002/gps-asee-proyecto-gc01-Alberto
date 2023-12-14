@@ -86,9 +86,7 @@ class HomeMenuFragment : Fragment() {
     ): View? {
         _binding = FragmentHomeMenuBinding.inflate(inflater, container, false)
         listadoCentrosSalud = listOf<Localizaciones>()
-        //val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
 
-        //mapFragment?.getMapAsync(callback)
         return binding.root
     }
 
@@ -102,25 +100,7 @@ class HomeMenuFragment : Fragment() {
 
         updateMapUI()
         launchDataLoad { repository.tryUpdateRecentLocationCache() }
-        /*
-        lifecycleScope.launch {
-            if(listadoCentrosSalud!!.isEmpty()){
 
-                try {
-                    listadoCentrosSalud = fetchUbications().filterNotNull()
-                    activity?.runOnUiThread {
-                        Log.d("HomeMenuFragment", "ApiCallBack completed")
-                        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-
-                        mapFragment?.getMapAsync(callback)
-                    }
-                } catch (error: APIError){
-                    Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
-                } finally {
-
-                }
-            }
-        }*/
 
         Log.i("OnViewCreated", "EL RESULTADO ES: ${listadoCentrosSalud}")
         Log.i("OnViewCreated", "View finished")

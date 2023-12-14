@@ -86,20 +86,20 @@ class ContactsFragment : Fragment() {
                     db.contactDAO().insert(contacto)
                     insertarTelefono.text = null
                     nombreContacto.text = null
+
+                    contacts = db.contactDAO().getAllContactsFromUser((activity as HomeActivity).getUser().cod!!)
+
+                    setUpRecyclerView()
+
                 }
             }
         }
 
         GlobalScope.launch {
-
             contacts = db.contactDAO().getAllContactsFromUser((activity as HomeActivity).getUser().cod!!)
 
             setUpRecyclerView()
-
-
         }
-
-
     }
 
     private fun setUpRecyclerView() {

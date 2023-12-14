@@ -10,8 +10,8 @@ import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
 @Dao
 interface VideoRecordDAO {
 
-    @Query("SELECT * FROM VideoRecord WHERE uri LIKE :first LIMIT 1")
-    suspend fun findByUri(first: String): VideoRecord
+    @Query("SELECT * FROM VideoRecord WHERE path LIKE :first LIMIT 1")
+    suspend fun findByPath(first: String): VideoRecord
 
     @Query("SELECT * FROM VideoRecord WHERE videoId = :first LIMIT 1")
     suspend fun findById(first: Long): VideoRecord

@@ -19,10 +19,11 @@ class RecordRegistryAdapter(
     ) : RecyclerView.ViewHolder(binding.root){
         fun bind(video: VideoRecord, totalItems: Int){
             with(binding){
-                uriPath.text = video.uri
+                uriPath.text = video.path
                 objectLayout.setOnClickListener{
                     onClick(video)
                 }
+                dateFiller.text = video.date
                 objectLayout.setOnLongClickListener{
                     onLongClick(video)
                     true

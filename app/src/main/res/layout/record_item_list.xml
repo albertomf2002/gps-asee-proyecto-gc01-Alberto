@@ -19,13 +19,12 @@
 
             <TextView
                 android:id="@+id/uriPath"
-                android:layout_width="220dp"
-                android:layout_height="70dp"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="10dp"
+                android:layout_width="221dp"
+                android:layout_height="69dp"
+                android:layout_marginStart="40dp"
                 android:text="Video"
                 app:layout_constraintStart_toStartOf="@+id/filePath"
-                app:layout_constraintTop_toBottomOf="@+id/filePath" />
+                app:layout_constraintTop_toTopOf="@+id/filePath" />
 
             <ImageView
                 android:id="@+id/imageView2"
@@ -34,16 +33,33 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="60dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/filePath"
+                app:layout_constraintTop_toBottomOf="@+id/textView3"
                 app:srcCompat="@drawable/baseline_video_library_24" />
 
             <TextView
                 android:id="@+id/filePath"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:text="Path:"
-                tools:layout_editor_absoluteX="-2dp"
-                tools:layout_editor_absoluteY="0dp" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+            <TextView
+                android:id="@+id/dateText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date:"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/dateFiller"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Filler"
+                app:layout_constraintStart_toEndOf="@+id/textView3"
+                app:layout_constraintTop_toBottomOf="@+id/textView3" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
