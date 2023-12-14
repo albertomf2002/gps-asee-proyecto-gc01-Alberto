@@ -27,9 +27,9 @@ class HomeMenuViewModel (
     val spinner: LiveData<Boolean>
         get() = _spinner
 
-    private val _toast = MutableLiveData<String>()
+    private val _toast = MutableLiveData<String?>()
 
-    val toast: LiveData<String>
+    val toast: LiveData<String?>
         get() = _toast
 
     private fun refresh(){
@@ -52,6 +52,10 @@ class HomeMenuViewModel (
                 _spinner.value = false
             }
         }
+    }
+
+    fun onToastShown() {
+        _toast.value = null
     }
 
 

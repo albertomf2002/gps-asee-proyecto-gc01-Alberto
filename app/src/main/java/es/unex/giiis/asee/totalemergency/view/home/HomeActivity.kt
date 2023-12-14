@@ -18,6 +18,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import es.unex.giiis.asee.totalemergency.view.home.UserProvider
 
 import es.unex.giiis.asee.totalmergency.R
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
@@ -30,7 +31,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickListener, ContactsFragment.OnShowClickListener {
+class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickListener, ContactsFragment.OnShowClickListener, UserProvider
+{
 
     val scope = CoroutineScope(Job() + Dispatchers.Main)
     private lateinit var db: TotalEmergencyDatabase
@@ -64,10 +66,11 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
             context.startActivity(intent)
         }
     }
+    override fun getUser() = my_user
 
-    fun getUser(): User {
-        return my_user
-    }
+    //fun getUser(): User {
+    //    return my_user
+    //}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
