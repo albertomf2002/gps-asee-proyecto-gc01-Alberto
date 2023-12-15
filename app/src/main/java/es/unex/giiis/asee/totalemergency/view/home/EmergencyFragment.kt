@@ -9,6 +9,7 @@ import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -18,6 +19,7 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
 import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
 import es.unex.giiis.asee.totalmergency.databinding.FragmentEmergencyBinding
@@ -25,11 +27,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FilePermission
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -39,6 +39,8 @@ private const val ARG_PARAM2 = "param2"
 class EmergencyFragment : Fragment() {
 
     private var _binding: FragmentEmergencyBinding? = null
+
+    private lateinit var videoUri : Uri
     private val binding get() = _binding!!
 
     private lateinit var db: TotalEmergencyDatabase
@@ -48,16 +50,30 @@ class EmergencyFragment : Fragment() {
     private val responseCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
             if(result.resultCode == RESULT_OK){
-                val videoUri = result.data?.data
-                val path = getPath(videoUri!!)
+
+                val calendar: Calendar = Calendar.getInstance()
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                val dateTime: String = dateFormat.format(calendar.time)
+
+                videoUri = result.data?.data!!
+                val path = getPath(videoUri)
 
                 Log.i("VIDEO_RECORD_TAG", "Other form of path: ${videoUri.path}")
                 Log.i("VIDEO_RECORD_TAG", "Video is recorded and available at uri: ${videoUri}")
                 Log.i("VIDEO_RECORD_TAG", "Video is recorded and available at path: ${path}")
 
-                val calendar: Calendar = Calendar.getInstance()
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                val dateTime: String = dateFormat.format(calendar.time)
+                val videoFile = createVideoFile(dateTime)
+
+                videoUri.let{ uri ->
+                    val inputStream = requireContext().contentResolver.openInputStream(uri)
+                    inputStream?.use { input ->
+                        videoFile?.outputStream().use { output ->
+                            input.copyTo(output!!)
+                        }
+                    }
+                }
+
+                Log.i("VIDEO_RECORD_TAG", "AUTHORITY: ${videoUri.authority}")
 
                 Log.i("DATE TIME", "The date is: ${dateTime}")
 
@@ -72,6 +88,25 @@ class EmergencyFragment : Fragment() {
             }
         }
 
+    private fun createVideoFile(timeStamp : String) : File? {
+
+        val storageDir: File? = requireContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES)
+
+        return storageDir?.let {
+            File.createTempFile(
+                "VIDEO_${timeStamp}_",
+                ".mp4",
+                it
+            ).apply {
+                // Save a file path for use with the captured video URI
+                videoUri = FileProvider.getUriForFile(
+                    (activity as HomeActivity),
+                    "es.unex.giiis.asee.totalmergency.fileprovider",
+                    this
+                )
+            }
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {

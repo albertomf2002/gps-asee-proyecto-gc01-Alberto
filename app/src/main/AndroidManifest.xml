@@ -32,6 +32,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TotalEmergency"
         tools:targetApi="31">
+
+        <provider
+            android:authorities="es.unex.giiis.asee.totalmergency.fileprovider"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
         <!--
 
              To get one, follow the directions here:

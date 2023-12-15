@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -139,19 +140,32 @@ class RecordDetail : Fragment() {
                 Log.d("INTENT", "REQUEST OPEN DOCUMENT")
 
                 lifecycleScope.launch {
-                    db.videoDAO().deleteFromId(video?.videoId!!)
+                    //db.videoDAO().deleteFromId(video?.videoId!!)
                 }
 
+                val uri = getFileUriFromPath(path!!)
+                Log.i("URI2", "The uri is: ${uri}")
+                Log.i("URI2", "The authority is: ${uri?.authority}")
+
+                requireContext().contentResolver.delete(uri!!, null, null)
+
+                if(fdelete.exists()){
+                        Log.i("FILE","Exists")
+                }else{
+                    Log.i("FILE","File doesnt exists")
+                }
                 /*
                 MediaScannerConnection.scanFile((activity as HomeActivity).applicationContext,
                     arrayOf<String>(fdelete.getAbsolutePath()),
                     null,
                     OnScanCompletedListener { new_path, uri ->
 
-
+                        Log.i("URI2", "The uri is: ${uri}")
+                        Log.i("URI2", "The authority is: ${uri.authority}")
                     }
                 )
-                */
+                 */
+
                 /*
                 val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
                 intent.addCategory(Intent.CATEGORY_OPENABLE)
@@ -160,6 +174,19 @@ class RecordDetail : Fragment() {
                 Log.d("INTENT", "RESPONSE OPEN DOCUMENT")
                 */
             }
+        }
+    }
+    private fun getFileUriFromPath(filePath: String): Uri? {
+        val file = File(filePath)
+        return if (file.exists()) {
+
+            FileProvider.getUriForFile(
+                requireContext(),
+                "es.unex.giiis.asee.totalmergency.fileprovider",
+                file
+            )
+        } else {
+            null
         }
     }
 
