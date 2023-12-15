@@ -3,6 +3,7 @@ package es.unex.giiis.asee.totalmergency.view.home
 import android.Manifest
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.icu.text.SimpleDateFormat
@@ -29,6 +30,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FilePermission
+import java.util.Date
+import java.util.Locale
 
 
 /**
@@ -51,19 +54,31 @@ class EmergencyFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
             if(result.resultCode == RESULT_OK){
 
-                val calendar: Calendar = Calendar.getInstance()
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                val dateTime: String = dateFormat.format(calendar.time)
-
                 videoUri = result.data?.data!!
-                val path = getPath(videoUri)
+                videoUri.let { it ->
+                    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+                    val videoFileName = "VIDEO_${timeStamp}.mp4"
 
-                Log.i("VIDEO_RECORD_TAG", "Other form of path: ${videoUri.path}")
-                Log.i("VIDEO_RECORD_TAG", "Video is recorded and available at uri: ${videoUri}")
-                Log.i("VIDEO_RECORD_TAG", "Video is recorded and available at path: ${path}")
+                    val folderName = "es.unex.giiis.asee.totalemergency.videos"
+                    val folderPath = requireContext().getDir(folderName, Context.MODE_PRIVATE).absolutePath
 
-                val videoFile = createVideoFile(dateTime)
+                    val videoFile = File(folderPath, videoFileName)
+                    val inputStream = requireContext().contentResolver.openInputStream(it)
+                    inputStream?.use { input ->
+                        videoFile.outputStream().use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                    val vr = VideoRecord(videoId= null, path= "${videoFile.path}", userId= (activity as HomeActivity).getUser().cod!!, date=timeStamp)
 
+                    scope.launch {
+                        insertNewVideo(vr)
+                    }
+
+
+                }
+
+                /*
                 videoUri.let{ uri ->
                     val inputStream = requireContext().contentResolver.openInputStream(uri)
                     inputStream?.use { input ->
@@ -72,15 +87,14 @@ class EmergencyFragment : Fragment() {
                         }
                     }
                 }
+                */
+                Log.i("VIDEO_RECORD_TAG", "Other form of path: ${videoUri.path}")
+                Log.i("VIDEO_RECORD_TAG", "Video is recorded and available at uri: ${videoUri}")
+                Log.i("VIDEO_RECORD_TAG", "Video uri authority: ${videoUri.authority}")
 
-                Log.i("VIDEO_RECORD_TAG", "AUTHORITY: ${videoUri.authority}")
+                Log.i("VIDEO_RECORD_TAG", "Video is recorded and available at uri: ${videoUri}")
+                Log.i("VIDEO_RECORD_TAG", "Video uri authority: ${videoUri.authority}")
 
-                Log.i("DATE TIME", "The date is: ${dateTime}")
-
-                val vr = VideoRecord(videoId= null, path= "$path", userId= (activity as HomeActivity).getUser().cod!!, date=dateTime)
-                scope.launch {
-                    insertNewVideo(vr)
-                }
             }else if(result.resultCode == RESULT_CANCELED){
                 Log.i("VIDEO_RECORD_TAG", "Video recording is cancelled")
             }else{
@@ -107,6 +121,13 @@ class EmergencyFragment : Fragment() {
             }
         }
     }
+
+    /* val folderName = "es.unex.giiis.asee.totalemergency.videos"
+                val internalDir = requireContext().getDir(folderName, Context.MODE_PRIVATE)
+                Log.i("DIR", "The dir name is: ${internalDir.name}")
+                Log.i("DIR", "The dir path is: ${internalDir.path}")
+                Log.i("DIR", "The dir parent is: ${internalDir.parent}")
+                */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -173,9 +194,13 @@ class EmergencyFragment : Fragment() {
                     val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
                     responseCamera.launch(intent)
                     //startActivityForResult(intent, 101)
+
                 } else {
                     Log.e("error", "No hay acceso a la cámara")
                 }
+
+
+
             }
         }
     }

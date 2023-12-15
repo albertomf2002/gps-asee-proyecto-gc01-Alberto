@@ -1,6 +1,7 @@
 package es.unex.giiis.asee.totalmergency.view.home
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.media.MediaScannerConnection
 import android.media.MediaScannerConnection.OnScanCompletedListener
@@ -77,11 +78,11 @@ class RecordDetail : Fragment() {
                                     // Example: val inputStream: InputStream? = contentResolver.openInputStream(uri)
                                     // Example: val outputStream: OutputStream? = contentResolver.openOutputStream(uri)
                                     // Example: documentFile.delete()
-                                    if(documentFile.delete()){
-                                        Log.i("documentFile", "DELETE")
-                                    }else{
-                                        Log.i("documentFile", "NOT DELETE")
-                                    }
+                                    //if(documentFile.delete()){
+                                    //    Log.i("documentFile", "DELETE")
+                                    //}else{
+                                    //    Log.i("documentFile", "NOT DELETE")
+                                    //}
                                 }
                             }
                         }
@@ -105,10 +106,12 @@ class RecordDetail : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         video = args.VideoUri
-        path = video?.path
-        fdelete = File(path!!)
 
-        Log.i("PATH:", "The path data ${path} is checked")
+        path = video?.path
+        Log.i("PATH", "The path data ${path} is checked")
+        fdelete = File(path!!)
+        Log.i("FILE", "The file path ${fdelete.path} is checked")
+
 
         _binding = FragmentRecordDetailBinding.inflate(inflater, container, false)
         return binding.root
@@ -139,22 +142,31 @@ class RecordDetail : Fragment() {
 
                 Log.d("INTENT", "REQUEST OPEN DOCUMENT")
 
-                lifecycleScope.launch {
-                    //db.videoDAO().deleteFromId(video?.videoId!!)
-                }
-
-                val uri = getFileUriFromPath(path!!)
-                Log.i("URI2", "The uri is: ${uri}")
-                Log.i("URI2", "The authority is: ${uri?.authority}")
-
-                requireContext().contentResolver.delete(uri!!, null, null)
-
-                if(fdelete.exists()){
-                        Log.i("FILE","Exists")
+                if(fdelete.delete()){
+                    Log.i("DELETE", "It was succesfully deleted")
+                    lifecycleScope.launch {
+                        db.videoDAO().deleteFromId(video?.videoId!!)
+                    }
                 }else{
-                    Log.i("FILE","File doesnt exists")
+                    Log.i("DELETE", "It was NOT succesfully deleted")
                 }
                 /*
+                val filePath = "VIDEO_20231215_151453.mp4" // File name or just the file name without path
+
+
+                try {
+                    val isDeleted = requireContext().deleteFile(filePath)
+                    if(isDeleted){
+                        Log.i("DELETE", "It was succesfully deleted")
+                    }else{
+                        Log.i("DELETE", "It was NOT succesfully deleted")
+                    }
+
+                }catch (e: Exception) {
+                    e.printStackTrace()
+                }*/
+
+               /*
                 MediaScannerConnection.scanFile((activity as HomeActivity).applicationContext,
                     arrayOf<String>(fdelete.getAbsolutePath()),
                     null,
