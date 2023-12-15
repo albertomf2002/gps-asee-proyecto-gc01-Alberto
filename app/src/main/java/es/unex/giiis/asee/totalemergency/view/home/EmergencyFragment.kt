@@ -51,6 +51,7 @@ class EmergencyFragment : Fragment() {
                 val videoUri = result.data?.data
                 val path = getPath(videoUri!!)
 
+                Log.i("VIDEO_RECORD_TAG", "Other form of path: ${videoUri.path}")
                 Log.i("VIDEO_RECORD_TAG", "Video is recorded and available at uri: ${videoUri}")
                 Log.i("VIDEO_RECORD_TAG", "Video is recorded and available at path: ${path}")
 
