@@ -18,7 +18,10 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
+import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
+import es.unex.giiis.asee.totalmergency.data.model.User
 import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
 import es.unex.giiis.asee.totalmergency.databinding.FragmentEmergencyBinding
 import kotlinx.coroutines.CoroutineScope
@@ -37,6 +40,10 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class EmergencyFragment : Fragment() {
+
+    private val homeViewModel: HomeViewModel by activityViewModels()
+
+    private lateinit var user: User
 
     private var _binding: FragmentEmergencyBinding? = null
     private val binding get() = _binding!!
@@ -60,7 +67,7 @@ class EmergencyFragment : Fragment() {
 
                 Log.i("DATE TIME", "The date is: ${dateTime}")
 
-                val vr = VideoRecord(videoId= null, path= "$path", userId= (activity as HomeActivity).getUser().cod!!, date=dateTime)
+                val vr = VideoRecord(videoId= null, path= "$path", userId= user.cod!!, date=dateTime)
                 scope.launch {
                     insertNewVideo(vr)
                 }
@@ -98,6 +105,9 @@ class EmergencyFragment : Fragment() {
 
         _binding = FragmentEmergencyBinding.inflate(inflater, container, false)
 
+        homeViewModel.user.observe(viewLifecycleOwner) { us ->
+            user = us
+        }
         db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
 
         return binding.root
