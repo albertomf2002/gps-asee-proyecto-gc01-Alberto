@@ -34,7 +34,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickListener, ContactsFragment.OnShowClickListener, UserProvider
+class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickListener, ContactsFragment.OnShowClickListener
 {
 
     //Factory necesaria para recuperar usuario
@@ -48,8 +48,6 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
     private val navController by lazy {
         (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
     }
-
-
 
     companion object {
         const val USER_INFO = "USER_INFO"
@@ -70,7 +68,6 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
             context.startActivity(intent)
         }
     }
-    override fun getUser() = my_user
 
     //fun getUser(): User {
     //    return my_user
@@ -86,13 +83,12 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
         viewModel.obtenerUser(userCod)
 
 
-        scope.launch {
 
-            Log.i("User data", "User is retrieved from database")
+        Log.i("User data", "User is retrieved from database")
 
-            setUpUI()
-            setUpListeners()
-        }
+        setUpUI()
+        setUpListeners()
+
     }
 
     fun setUpUI() {
