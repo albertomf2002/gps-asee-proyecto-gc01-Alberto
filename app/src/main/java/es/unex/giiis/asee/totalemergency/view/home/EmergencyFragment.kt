@@ -50,7 +50,7 @@ class EmergencyFragment : Fragment() {
     private val responseCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
             if(result.resultCode == RESULT_OK){
-                // ViewModel retrieves data.
+
                 viewModel.retrieveUriData(result.data?.data!!, requireContext())
 
             }else if(result.resultCode == RESULT_CANCELED){

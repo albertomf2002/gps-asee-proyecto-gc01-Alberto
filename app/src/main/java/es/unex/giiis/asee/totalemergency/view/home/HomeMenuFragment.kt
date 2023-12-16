@@ -47,7 +47,7 @@ class HomeMenuFragment : Fragment() {
     private var _binding: FragmentHomeMenuBinding? = null
     private val binding get() = _binding!!
 
-    private var listadoCentrosSalud: List<Localizaciones>? = null
+    private var listadoCentrosSalud: List<Localizaciones>? = listOf()
 
     private val viewModel : HomeMenuViewModel by viewModels{ HomeMenuViewModel.Factory }
     private val homeViewModel: HomeViewModel by activityViewModels()
@@ -65,6 +65,7 @@ class HomeMenuFragment : Fragment() {
 
         val caceres = LatLng(39.4743, -6.3710)
         googleMap.addMarker(MarkerOptions().position(caceres).title("Marker in caceres"))
+
 
         if(listadoCentrosSalud!!.isNotEmpty()){
             var incr = 1
@@ -94,6 +95,9 @@ class HomeMenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.i("OnViewCreated", "Creating view")
+
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        mapFragment?.getMapAsync(callback)
 
         homeViewModel.user.observe(viewLifecycleOwner) { us ->
             viewModel.user = us
