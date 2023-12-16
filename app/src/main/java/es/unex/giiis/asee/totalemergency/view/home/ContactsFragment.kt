@@ -39,6 +39,8 @@ class ContactsFragment : Fragment() {
     interface OnShowClickListener{
         fun onShowClickCall(contact: Contact)
         fun onDeleteClickCall(contact: Contact)
+
+        fun onClickDelete(contact: Contact)
     }
 
 
@@ -133,6 +135,10 @@ class ContactsFragment : Fragment() {
                 onLongClick = {
                     listener.onDeleteClickCall(it)
                     Toast.makeText(context, "long click on:" + it.contactName, Toast.LENGTH_SHORT).show()
+                },
+                onClickDelete = {
+                    listener.onClickDelete(it)
+                    Toast.makeText(context, "Presiona más tiempo para borrar", Toast.LENGTH_SHORT).show()
                 })
 
             with(binding){

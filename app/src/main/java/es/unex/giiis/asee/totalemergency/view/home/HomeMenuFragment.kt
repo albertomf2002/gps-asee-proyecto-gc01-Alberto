@@ -48,16 +48,19 @@ class HomeMenuFragment : Fragment() {
         val caceres = LatLng(39.4743, -6.3710)
         googleMap.addMarker(MarkerOptions().position(caceres).title("Marker in caceres"))
 
+        if(listadoCentrosSalud != null) {
+            if (listadoCentrosSalud!!.isNotEmpty()) {
+                var incr = 1
+                for (loc in listadoCentrosSalud!!) {
+                    val posicion = LatLng(loc.latitude, loc.longitude)
+                    val nombre = loc.name
+                    Log.i("MAP", "DATA ${incr} IS: ${nombre}, latitud y longitud: ${posicion}")
 
-        if(listadoCentrosSalud!!.isNotEmpty()){
-            var incr = 1
-            for(loc in listadoCentrosSalud!!){
-                val posicion = LatLng(loc.latitude, loc.longitude)
-                val nombre = loc.name
-                Log.i("MAP", "DATA ${incr} IS: ${nombre}, latitud y longitud: ${posicion}")
-
-                googleMap.addMarker(MarkerOptions().position(posicion).title("Marker in ${nombre}"))
-                incr++
+                    googleMap.addMarker(
+                        MarkerOptions().position(posicion).title("Marker in ${nombre}")
+                    )
+                    incr++
+                }
             }
         }
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(caceres))
