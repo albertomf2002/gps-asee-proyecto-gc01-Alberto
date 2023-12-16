@@ -1,21 +1,26 @@
 package es.unex.giiis.asee.totalmergency.view.home
 
-import android.content.ContentResolver
+import android.app.Activity
 import android.content.Context
-import android.database.Cursor
-import android.media.MediaPlayer
+import android.content.Intent
+import android.media.MediaScannerConnection
+import android.media.MediaScannerConnection.OnScanCompletedListener
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.DocumentsContract
 import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
+import androidx.documentfile.provider.DocumentFile
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import es.unex.giiis.asee.totalemergency.view.home.RecordDetailViewModel
 import es.unex.giiis.asee.totalmergency.R
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
 import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
@@ -23,11 +28,8 @@ import es.unex.giiis.asee.totalmergency.databinding.FragmentRecordDetailBinding
 import kotlinx.coroutines.launch
 import org.apache.commons.io.FileUtils
 import java.io.File
+import java.io.IOException
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -36,6 +38,8 @@ private const val ARG_PARAM2 = "param2"
  */
 class RecordDetail : Fragment() {
 
+    private val viewModel : RecordDetailViewModel by viewModels { RecordDetailViewModel.Factory }
+
     private var _binding: FragmentRecordDetailBinding? = null
     private val binding get() = _binding!!
 
@@ -43,6 +47,8 @@ class RecordDetail : Fragment() {
 
     //private var uri: Uri? = null
     private var path: String? = null
+    private lateinit var fdelete: File
+
 
     private val args: RecordDetailArgs by navArgs()
 
@@ -53,8 +59,7 @@ class RecordDetail : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
         }
     }
 
@@ -64,8 +69,15 @@ class RecordDetail : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         video = args.VideoUri
+
         path = video?.path
-        Log.i("PATH:", "The path data ${path} is checked")
+        fdelete = File(path!!)
+
+        viewModel.video = args.VideoUri
+        viewModel.path = viewModel.video?.path
+
+        Log.i("PATH", "The path data ${path} is checked")
+        Log.i("FILE", "The file path ${fdelete.path} is checked")
 
         _binding = FragmentRecordDetailBinding.inflate(inflater, container, false)
         return binding.root
@@ -74,26 +86,24 @@ class RecordDetail : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.i("PATH", "The path is: ${path}")
-        //var mediaPlayer = MediaPlayer.create(context, uri)
-
         with(binding){
             //videoView.setVideoURI(uri)
             val db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
 
-            if(path == null){
+            if(viewModel.path == null){
                 lifecycleScope.launch {
-                    //db.videoDAO().deleteFromId(video?.videoId!!)
+                    db.videoDAO().deleteFromId(video?.videoId!!)
                 }
             }else {
-                videoView.setVideoPath(path)
+                videoView.setVideoPath(viewModel.path)
                 videoView.start()
             }
 
             eliminarVideo.setOnClickListener {
                 videoView.stopPlayback()
 
-                val fdelete = File(path!!)
+                Log.d("INTENT", "REQUEST OPEN DOCUMENT")
+                val fdelete = File(viewModel.path!!)
                 try {
                     //fdelete.delete()
                     //FileUtils.forceDelete(fdelete)
@@ -105,24 +115,30 @@ class RecordDetail : Fragment() {
                     Log.e("DELETE", "ERROR: Video cant be deleted, reason: ${e.message}")
                 }
 
-                /*
-                lifecycleScope.launch {
-
-                    if (fdelete.exists()) //Should be always true
-                    {
-                        try {
-                            //fdelete.delete()
-                            db.videoDAO().deleteFromId(video?.videoId!!)
-                        } catch (e: Exception){
-                            Log.e("DELETE", "ERROR: Video cant be deleted, reason: ${e.message}")
-                        }
-
-                    }else{
-                        Log.i("DELETE", "Video path doesn't exists")
+                if(fdelete.delete()){
+                    Log.i("DELETE", "It was succesfully deleted")
+                    lifecycleScope.launch {
+                        db.videoDAO().deleteFromId(video?.videoId!!)
                     }
+                }else{
+                    Log.i("DELETE", "It was NOT succesfully deleted")
                 }
-                */
+
+
+
             }
+        }
+    }
+    private fun getFileUriFromPath(filePath: String): Uri? {
+        val file = File(filePath)
+        return if (file.exists()) {
+            FileProvider.getUriForFile(
+                requireContext(),
+                "es.unex.giiis.asee.totalmergency.fileprovider",
+                file
+            )
+        } else {
+            null
         }
     }
 
@@ -135,13 +151,12 @@ class RecordDetail : Fragment() {
          * @param param2 Parameter 2.
          * @return A new instance of fragment RecordDetail.
          */
-        // TODO: Rename and change types and number of parameters
+
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             RecordDetail().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+
                 }
             }
     }
