@@ -14,13 +14,15 @@ import kotlinx.coroutines.launch
 class ContactsAdapter(
     private val contacts: List<Contact>,
     private val onClick: (contact: Contact) -> Unit,
-    private val onLongClick: (uri: Contact) -> Unit
+    private val onLongClick: (uri: Contact) -> Unit,
+    private val onClickDelete: (deleteContact: Contact) -> Unit
 ) : RecyclerView.Adapter<ContactsAdapter.ShowViewHolder>() {
 
     class ShowViewHolder(
         private val binding: ContactItemListBinding,
         private val onClick: (contact: Contact) -> Unit,
-        private val onLongClick: (uri: Contact) -> Unit
+        private val onLongClick: (uri: Contact) -> Unit,
+        private val onClickDelete: (deleteContact: Contact) -> Unit
     ) : RecyclerView.ViewHolder(binding.root){
         fun bind(contact: Contact, totalItems: Int){
             with(binding){
@@ -34,17 +36,17 @@ class ContactsAdapter(
                     onLongClick(contact)
                     true
                 }
+                borrarContacto.setOnClickListener {
+                    onClickDelete(contact)
+                }
             }
         }
     }
 
-    fun updater(){
-        notifyDataSetChanged()
-    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactsAdapter.ShowViewHolder {
         val binding =
             ContactItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ContactsAdapter.ShowViewHolder(binding, onClick, onLongClick)
+        return ContactsAdapter.ShowViewHolder(binding, onClick, onLongClick, onClickDelete)
     }
     override fun getItemCount() = contacts.size
 
