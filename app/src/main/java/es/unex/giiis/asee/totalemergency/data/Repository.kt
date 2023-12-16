@@ -17,6 +17,7 @@ import es.unex.giiis.asee.totalemergency.data.database.dao.UserDAO
 import es.unex.giiis.asee.totalemergency.data.database.dao.VideoRecordDAO
 import es.unex.giiis.asee.totalmergency.api.APIError
 import es.unex.giiis.asee.totalmergency.api.UbicationAPI
+import es.unex.giiis.asee.totalmergency.data.model.Contact
 import es.unex.giiis.asee.totalmergency.data.model.User
 import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
 import es.unex.giiis.asee.totalmergency.data.toLoc
@@ -33,8 +34,13 @@ class Repository (
 ) {
     private var lastUpdateTimeMillis: Long = 0L
 
+
+
     val localizaciones = localizacionesDao.getAllUbications()
 
+    suspend fun obtenerContactos(cod : Long) : List<Contact>{
+        return contactDao.getAllContactsFromUser(cod)
+    }
     suspend fun insertVideo(vr : VideoRecord){
         videoRecordDao.insert(vr)
     }
