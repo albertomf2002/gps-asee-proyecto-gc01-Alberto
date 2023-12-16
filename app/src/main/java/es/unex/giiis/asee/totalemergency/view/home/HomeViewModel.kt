@@ -27,11 +27,6 @@ class HomeViewModel(
         }
     }
 
-    fun borrarContact(cod : Long){
-        viewModelScope.launch {
-            repository.deleteContactFromCod(cod)
-        }
-    }
 
     companion object {
 

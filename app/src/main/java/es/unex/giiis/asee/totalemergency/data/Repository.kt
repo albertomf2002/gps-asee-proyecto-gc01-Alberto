@@ -41,9 +41,15 @@ class Repository (
     suspend fun obtenerContactos(cod : Long) : List<Contact>{
         return contactDao.getAllContactsFromUser(cod)
     }
+
+    suspend fun guardarContacto(contact: Contact) {
+        contactDao.insert(contact)
+    }
     suspend fun insertVideo(vr : VideoRecord){
         videoRecordDao.insert(vr)
     }
+
+
 
     suspend fun getUserFromCod(cod: Long) : User{
         return userDao.findByCod(cod)

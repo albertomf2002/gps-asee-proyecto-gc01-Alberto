@@ -34,6 +34,17 @@ class ContactsViewModel(
         }
     }
 
+    fun guardarContacto(contact: Contact){
+        viewModelScope.launch {
+            repository.guardarContacto(contact)
+        }
+    }
+
+    fun borrarContact(cod : Long){
+        viewModelScope.launch {
+            repository.deleteContactFromCod(cod)
+        }
+    }
 
 
     companion object {

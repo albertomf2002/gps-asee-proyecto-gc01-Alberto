@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import es.unex.giiis.asee.totalemergency.view.home.ContactsViewModel
 import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
@@ -29,7 +30,8 @@ import java.lang.RuntimeException
  * Use the [ContactsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ContactsFragment : Fragment() {
+
+class ContactsFragment : Fragment(){
 
     private lateinit var listener: OnShowClickListener
 
@@ -38,8 +40,7 @@ class ContactsFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
     interface OnShowClickListener{
         fun onShowClickCall(contact: Contact)
-        fun onDeleteClickCall(contact: Contact)
-
+        fun onDeleteClickCall(contact: Contact, viewModel: ContactsViewModel)
         fun onClickDelete(contact: Contact)
     }
 
@@ -49,9 +50,8 @@ class ContactsFragment : Fragment() {
 
     private lateinit var adapter: ContactsAdapter
 
-    private lateinit var db: TotalEmergencyDatabase
-
     private var contacts: List<Contact>? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,11 +62,14 @@ class ContactsFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+
         if(context is OnShowClickListener){
+            Log.i("CONTEXT", "COUNTER OnShowClickListener")
             listener = context
         } else {
             throw RuntimeException(context.toString() + " must implement OnShowClickListener")
         }
+
     }
 
     override fun onCreateView(
@@ -75,8 +78,6 @@ class ContactsFragment : Fragment() {
     ): View? {
 
         _binding = FragmentContactsBinding.inflate(inflater, container, false)
-
-        db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
 
         homeViewModel.user.observe(viewLifecycleOwner) { us ->
             viewModel.user = us
@@ -101,20 +102,14 @@ class ContactsFragment : Fragment() {
                 val contacto = Contact(null, insertarTelefono.text.toString().toLong(), nombreContacto.text.toString(), userId = viewModel.user?.cod!!)
                 Log.i("DATA IS:"," ${contacto}")
 
-
-                lifecycleScope.launch {
-                    Log.i("Contacto", "INSERTANDO NUEVO CONTACTO")
-                    db.contactDAO().insert(contacto)
-                    viewModel.obtenerListado()
-                }
+                Log.i("Contacto", "INSERTANDO NUEVO CONTACTO")
+                viewModel.guardarContacto(contacto)
+                viewModel.obtenerListado()
 
                 viewModel.contactos.observe(viewLifecycleOwner) { it ->
                     Log.i("Contacto", "Recuperando cambios: ${it?.size}")
                     contacts = it
-
-                    (activity as HomeActivity).runOnUiThread {
-                        setUpRecyclerView()
-                    }
+                    adapter.notifyDataSetChanged()
                 }
 
                 insertarTelefono.text = null
@@ -133,7 +128,8 @@ class ContactsFragment : Fragment() {
                     Toast.makeText(context, "click on:" + it.contactName, Toast.LENGTH_SHORT).show()
                 },
                 onLongClick = {
-                    listener.onDeleteClickCall(it)
+                    listener.onDeleteClickCall(it, viewModel)
+                    adapter.notifyDataSetChanged()
                     Toast.makeText(context, "long click on:" + it.contactName, Toast.LENGTH_SHORT).show()
                 },
                 onClickDelete = {
