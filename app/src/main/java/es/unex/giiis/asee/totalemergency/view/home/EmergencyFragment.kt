@@ -42,8 +42,6 @@ class EmergencyFragment : Fragment() {
 
     private val homeViewModel: HomeViewModel by activityViewModels()
 
-    private lateinit var user: User
-
     private var _binding: FragmentEmergencyBinding? = null
     private val binding get() = _binding!!
 
@@ -68,7 +66,7 @@ class EmergencyFragment : Fragment() {
 
         }
 
-        viewModel.user = (activity as HomeActivity).getUser()
+
         if(isFrontCameraPresent()){
             Log.i("notice", "Camera is detected")
             getCameraPermission()
@@ -91,7 +89,7 @@ class EmergencyFragment : Fragment() {
         _binding = FragmentEmergencyBinding.inflate(inflater, container, false)
 
         homeViewModel.user.observe(viewLifecycleOwner) { us ->
-            user = us
+            viewModel.user = us
         }
 
         return binding.root
