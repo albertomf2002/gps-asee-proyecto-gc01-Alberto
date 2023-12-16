@@ -1,5 +1,10 @@
 package es.unex.giiis.asee.totalemergency.view.home
 
+import android.content.Context
+import android.icu.text.SimpleDateFormat
+import android.icu.util.Calendar
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,6 +25,38 @@ class EmergencyViewModel (
     private val repository: Repository,
 ) : ViewModel() {
     var user: User? = null
+
+    private val _cameraResponse = MutableLiveData<Pair<Long, String>>()
+    val cameraResponse: LiveData<Pair<Long, String>>
+        get() = _cameraResponse
+
+    fun retrieveUriData(uri: Uri, context: Context){
+        viewModelScope.launch {
+            // Get the variables
+            val videoUri = uri
+            val path = repository.getPath(videoUri, context)
+
+            Log.i("VIDEO_RECORD_TAG", "Video is recorded and available at path: ${path}")
+            //Sacar la fecha
+            val calendar: Calendar = Calendar.getInstance()
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            val dateTime: String = dateFormat.format(calendar.time)
+
+            Log.i("DATE TIME", "The date is: ${dateTime}")
+            // Patron repository se encarga de manejar la BD.
+            val codInserted = repository.tryStoreVideo(path!!, user?.cod!!, dateTime)
+            /*
+             Actualizo la respuesta.
+             La vista vinculada (?) (EmergencyFragment, pero puede ser cualquier otra que lo llegase a requerir)
+                * Recibe respuesta.
+             */
+
+            _cameraResponse.value = Pair<Long, String>(codInserted,if(codInserted != -1L) "Camera response, video inserted with cod:${codInserted}" else "Video failed to be created")
+
+        }
+    }
+
+
 
     init {
 

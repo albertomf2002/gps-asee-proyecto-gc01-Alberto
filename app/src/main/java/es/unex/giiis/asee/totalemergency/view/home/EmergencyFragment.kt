@@ -3,6 +3,7 @@ package es.unex.giiis.asee.totalmergency.view.home
 import android.Manifest
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.icu.text.SimpleDateFormat
@@ -19,6 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import es.unex.giiis.asee.totalemergency.view.home.EmergencyViewModel
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
 import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
@@ -43,21 +45,8 @@ class EmergencyFragment : Fragment() {
     private val responseCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
             if(result.resultCode == RESULT_OK){
-                val videoUri = result.data?.data
-                val path = getPath(videoUri!!)
-
-                Log.i("VIDEO_RECORD_TAG", "Video is recorded and available at uri: ${videoUri}")
-                Log.i("VIDEO_RECORD_TAG", "Video is recorded and available at path: ${path}")
-
-                val calendar: Calendar = Calendar.getInstance()
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                val dateTime: String = dateFormat.format(calendar.time)
-
-                Log.i("DATE TIME", "The date is: ${dateTime}")
-
-                val vr = VideoRecord(videoId= null, path= "$path", userId= (activity as HomeActivity).getUser().cod!!, date=dateTime)
-
-                viewModel.insertVideo(vr)
+                // ViewModel retrieves data.
+                viewModel.retrieveUriData(result.data?.data!!, requireContext())
 
             }else if(result.resultCode == RESULT_CANCELED){
                 Log.i("VIDEO_RECORD_TAG", "Video recording is cancelled")
@@ -71,6 +60,8 @@ class EmergencyFragment : Fragment() {
         arguments?.let {
 
         }
+
+        viewModel.user = (activity as HomeActivity).getUser()
         if(isFrontCameraPresent()){
             Log.i("notice", "Camera is detected")
             getCameraPermission()
@@ -102,21 +93,18 @@ class EmergencyFragment : Fragment() {
 
     }
 
-    fun getPath(uri: Uri): String? {
-        val projection = arrayOf(MediaStore.Video.Media.DATA)
-        val cursor = context?.contentResolver?.query(uri, projection, null, null, null)
-        cursor?.use {
-            Log.i("Cursor", "Trying to fetch the data")
-            if(it.moveToFirst()){
-                val columnIndex = it.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)
-                return it.getString(columnIndex)
-            }
-        }
-        return null
+    private fun observeCameraResponse(){
+        viewModel.cameraResponse.observe(viewLifecycleOwner, Observer { response ->
+            Log.d("OBSERVER", "The response is: [${response}]")
+        })
     }
 
-    fun setUpListeners() {
 
+    fun setUpListeners() {
+        /*
+        binding.emergency.setOnClickListener {
+            viewModel.onEmergencyClicked()
+        }*/
         with(binding){
             //emergencyButton.onKeyLongPress(3)
             emergency.setOnClickListener {
@@ -125,12 +113,15 @@ class EmergencyFragment : Fragment() {
 
                     val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
                     responseCamera.launch(intent)
-                    //startActivityForResult(intent, 101)
+                    observeCameraResponse()
+
                 } else {
                     Log.e("error", "No hay acceso a la cámara")
                 }
             }
         }
+
+
     }
 
     private fun isBackCameraPresent(): Boolean {
