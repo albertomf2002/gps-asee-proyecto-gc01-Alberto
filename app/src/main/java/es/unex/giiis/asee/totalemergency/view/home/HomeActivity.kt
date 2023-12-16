@@ -10,11 +10,13 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import es.unex.giiis.asee.totalemergency.view.home.ContactsViewModel
 import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
 
 import es.unex.giiis.asee.totalmergency.R
@@ -164,15 +166,17 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
         startActivity(callIntent)
     }
 
-    override fun onDeleteClickCall(contact: Contact) {
+    override fun onDeleteClickCall(contact: Contact, viewModel: ContactsViewModel) {
         if (contact.contactId != null) {
             viewModel.borrarContact(contact.contactId!!)
+            viewModel.obtenerListado()
         }
     }
 
     override fun onClickDelete(contact: Contact) {
         //Nothing, yet
     }
+
     /*
     override fun onShowClick(show: Show) {
         val action = DiscoverFragmentDirections.actionDiscoverFragmentToShowDetailFragment(show)
