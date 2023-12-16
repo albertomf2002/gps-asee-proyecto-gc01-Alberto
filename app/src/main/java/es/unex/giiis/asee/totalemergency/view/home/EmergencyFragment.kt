@@ -55,29 +55,13 @@ class EmergencyFragment : Fragment() {
 
             }else if(result.resultCode == RESULT_CANCELED){
                 Log.i("VIDEO_RECORD_TAG", "Video recording is cancelled")
-            }else{
-                Log.i("VIDEO_RECORD_TAG", "Something bad happened, i guess")
             }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
 
-        }
-
-
-        if(isFrontCameraPresent()){
-            Log.i("notice", "Camera is detected")
-            getCameraPermission()
-        }else {
-            if (isBackCameraPresent()) {
-                Log.i("notice", "Back camera is detected")
-                getCameraPermission()
-            } else {
-                Log.i("notice", "No camera is detected")
-            }
-        }
+        viewModel.obtainPermission(requireContext(), activity as HomeActivity)
     }
 
     override fun onCreateView(
@@ -117,38 +101,20 @@ class EmergencyFragment : Fragment() {
         with(binding){
             //emergencyButton.onKeyLongPress(3)
             emergency.setOnClickListener {
-                if (isFrontCameraPresent()) {
-                    Log.i("suceso", "hay acceso a la cámara")
 
-                    val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
-                    responseCamera.launch(intent)
-                    observeCameraResponse()
-
-                } else {
-                    Log.e("error", "No hay acceso a la cámara")
-                }
+                viewModel.cameraPermission.observe(viewLifecycleOwner, Observer { response ->
+                    if(response){
+                        Log.i("Acceso", "Existe acceso a la camara")
+                        val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+                        responseCamera.launch(intent)
+                        observeCameraResponse()
+                    }else{
+                        Log.i("Acceso", "NO Existe acceso a la camara")
+                    }
+                })
             }
         }
     }
-
-    private fun isBackCameraPresent(): Boolean {
-        return context?.packageManager?.hasSystemFeature(PackageManager.FEATURE_CAMERA_EXTERNAL)?: false
-    }
-    fun isFrontCameraPresent() : Boolean {
-        return context?.packageManager?.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT)?: false
-    }
-
-    fun getCameraPermission() {
-        Log.i("Permission request", "Permission request called")
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
-            == PackageManager.PERMISSION_DENIED
-        ) {
-            Log.i("Permission request", "Permission request successfully called")
-            ActivityCompat.requestPermissions(activity as HomeActivity, arrayOf(Manifest.permission.CAMERA), 100)
-        }
-
-    }
-
 
     companion object {
         /**

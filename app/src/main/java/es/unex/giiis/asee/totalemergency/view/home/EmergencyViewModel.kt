@@ -1,5 +1,6 @@
 package es.unex.giiis.asee.totalemergency.view.home
 
+import android.app.Activity
 import android.content.Context
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
@@ -30,6 +31,10 @@ class EmergencyViewModel (
     val cameraResponse: LiveData<Pair<Long, String>>
         get() = _cameraResponse
 
+    private val _cameraPermission = MutableLiveData<Boolean>()
+    val cameraPermission: LiveData<Boolean>
+        get() = _cameraPermission
+
     fun retrieveUriData(uri: Uri, context: Context){
         viewModelScope.launch {
             // Get the variables
@@ -59,6 +64,17 @@ class EmergencyViewModel (
 
 
     init {
+
+    }
+
+    fun obtainPermission(context: Context, activity : Activity){
+        if(repository.isFrontCameraPresent(context) || repository.isBackCameraPresent(context)){
+            repository.requestCameraPermission(context, activity)
+            _cameraPermission.value = true
+        }else{
+            _cameraPermission.value = false
+        }
+
 
     }
 

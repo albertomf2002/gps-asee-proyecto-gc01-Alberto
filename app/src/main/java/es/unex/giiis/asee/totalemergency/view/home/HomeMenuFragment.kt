@@ -73,12 +73,6 @@ class HomeMenuFragment : Fragment() {
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(caceres))
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        // db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
-        //repository = Repository.getInstance(db.localizacionesDao(),getNetworkService())
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
