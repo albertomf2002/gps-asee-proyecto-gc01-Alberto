@@ -22,11 +22,6 @@ class HomeMenuViewModel (
     var user: User? = null
     val localizaciones = repository.localizaciones
 
-
-    private val _spinner = MutableLiveData<Boolean>()
-    val spinner: LiveData<Boolean>
-        get() = _spinner
-
     private val _toast = MutableLiveData<String?>()
 
     val toast: LiveData<String?>
@@ -44,12 +39,9 @@ class HomeMenuViewModel (
     private fun launchDataLoad(block: suspend () -> Unit): Job {
         return viewModelScope.launch {
             try{
-                _spinner.value = true
                 block()
             } catch (error: APIError){
                 _toast.value = error.message
-            } finally {
-                _spinner.value = false
             }
         }
     }
