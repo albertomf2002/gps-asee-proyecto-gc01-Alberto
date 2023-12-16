@@ -111,7 +111,6 @@ class ContactsFragment : Fragment() {
                     contacts = it
 
                     (activity as HomeActivity).runOnUiThread {
-                        adapter.notifyDataSetChanged()
                         setUpRecyclerView()
                     }
                 }
