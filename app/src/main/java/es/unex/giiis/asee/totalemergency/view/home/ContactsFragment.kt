@@ -9,8 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import es.unex.giiis.asee.totalemergency.view.home.ContactsViewModel
 import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
 import es.unex.giiis.asee.totalmergency.R
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
@@ -21,10 +23,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.lang.RuntimeException
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -35,13 +33,14 @@ class ContactsFragment : Fragment() {
 
     private lateinit var listener: OnShowClickListener
 
+    private val viewModel : ContactsViewModel by viewModels { ContactsViewModel.Factory }
+
     private val homeViewModel: HomeViewModel by activityViewModels()
     interface OnShowClickListener{
         fun onShowClickCall(contact: Contact)
         fun onDeleteClickCall(contact: Contact)
     }
 
-    private lateinit var user: User
 
     private var _binding: FragmentContactsBinding? = null
     private val binding get() = _binding!!
@@ -78,7 +77,8 @@ class ContactsFragment : Fragment() {
         db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
 
         homeViewModel.user.observe(viewLifecycleOwner) { us ->
-            user = us
+            viewModel.user = us
+            viewModel.obtenerListado()
         }
 
         // Inflate the layout for this fragment
@@ -88,46 +88,58 @@ class ContactsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        with(binding){
-            botonInsertar.setOnClickListener {
-                val contacto = Contact(null, insertarTelefono.text.toString().toLong(), nombreContacto.text.toString(), userId = user.cod!!)
-                lifecycleScope.launch {
-
-                    Log.i("Contacto", "INSERTANDO NUEVO CONTACTO")
-                    db.contactDAO().insert(contacto)
-                    insertarTelefono.text = null
-                    nombreContacto.text = null
-
-                    contacts = db.contactDAO().getAllContactsFromUser(user.cod!!)
-
-                    setUpRecyclerView()
-
-                }
-            }
+        viewModel.contactos.observe(viewLifecycleOwner) { it ->
+            contacts = it
+            setUpRecyclerView()
         }
 
-        GlobalScope.launch {
-            contacts = db.contactDAO().getAllContactsFromUser(user.cod!!)
+        with(binding){
+            botonInsertar.setOnClickListener {
 
-            setUpRecyclerView()
+                val contacto = Contact(null, insertarTelefono.text.toString().toLong(), nombreContacto.text.toString(), userId = viewModel.user?.cod!!)
+                Log.i("DATA IS:"," ${contacto}")
+
+
+                lifecycleScope.launch {
+                    Log.i("Contacto", "INSERTANDO NUEVO CONTACTO")
+                    db.contactDAO().insert(contacto)
+                    viewModel.obtenerListado()
+                }
+
+                viewModel.contactos.observe(viewLifecycleOwner) { it ->
+                    Log.i("Contacto", "Recuperando cambios: ${it?.size}")
+                    contacts = it
+
+                    (activity as HomeActivity).runOnUiThread {
+                        adapter.notifyDataSetChanged()
+                        setUpRecyclerView()
+                    }
+                }
+
+                insertarTelefono.text = null
+                nombreContacto.text = null
+            }
         }
     }
 
     private fun setUpRecyclerView() {
-        Log.i("AAA", "DONT CRASH is: " + contacts?.size)
-        adapter = ContactsAdapter(contacts = contacts!!,
-            onClick = {
-                listener.onShowClickCall(it)
-                Toast.makeText(context, "click on:" + it.contactName, Toast.LENGTH_SHORT).show()
-            },
-            onLongClick = {
-                listener.onDeleteClickCall(it)
-                Toast.makeText(context, "long click on:" + it.contactName, Toast.LENGTH_SHORT).show()
-            })
+        if(contacts != null) {
+            Log.i("AAA", "DONT CRASH is: " + contacts?.size)
 
-        with(binding){
-            listadoContactos.layoutManager = LinearLayoutManager(context)
-            listadoContactos.adapter = adapter
+            adapter = ContactsAdapter(contacts = contacts!!,
+                onClick = {
+                    listener.onShowClickCall(it)
+                    Toast.makeText(context, "click on:" + it.contactName, Toast.LENGTH_SHORT).show()
+                },
+                onLongClick = {
+                    listener.onDeleteClickCall(it)
+                    Toast.makeText(context, "long click on:" + it.contactName, Toast.LENGTH_SHORT).show()
+                })
+
+            with(binding){
+                listadoContactos.layoutManager = LinearLayoutManager(context)
+                listadoContactos.adapter = adapter
+            }
         }
         android.util.Log.d("ContactsFragment", "SetUpRecyclerView")
     }
@@ -146,10 +158,6 @@ class ContactsFragment : Fragment() {
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             ContactsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
             }
     }
 }
