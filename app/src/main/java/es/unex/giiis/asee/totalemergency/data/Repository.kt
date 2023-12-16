@@ -87,6 +87,7 @@ class Repository (
     private suspend fun fetchRecentUbications() {
         Log.d("Repository", "Fetching data from ubications")
         try {
+            Log.d("Repository", "PRE DANGER")
             val localizaciones = networkService.getAllUbications().map { it.toLoc() }
             Log.d("Repository", "Data has been read: ${localizaciones.size}")
             localizacionesDao.insertAll(localizaciones)

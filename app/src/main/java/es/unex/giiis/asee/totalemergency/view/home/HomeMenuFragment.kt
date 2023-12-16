@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 
@@ -21,6 +22,7 @@ import es.unex.giiis.asee.totalemergency.TotalEmergencyApplication
 import es.unex.giiis.asee.totalemergency.data.Repository
 import es.unex.giiis.asee.totalemergency.data.model.Localizaciones
 import es.unex.giiis.asee.totalemergency.view.home.HomeMenuViewModel
+import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
 import es.unex.giiis.asee.totalemergency.view.home.UserProvider
 
 
@@ -48,7 +50,7 @@ class HomeMenuFragment : Fragment() {
     private var listadoCentrosSalud: List<Localizaciones>? = null
 
     private val viewModel : HomeMenuViewModel by viewModels{ HomeMenuViewModel.Factory }
-    private lateinit var user: User
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -93,10 +95,9 @@ class HomeMenuFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.i("OnViewCreated", "Creating view")
 
-        val userProvider = activity as UserProvider
-        user = userProvider.getUser()
-
-        viewModel.user = user
+        homeViewModel.user.observe(viewLifecycleOwner) { us ->
+            viewModel.user = us
+        }
 
         viewModel.toast.observe(viewLifecycleOwner) { text ->
             text?.let {
