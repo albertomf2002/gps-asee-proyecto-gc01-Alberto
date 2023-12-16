@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
@@ -23,6 +24,8 @@ import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
 import es.unex.giiis.asee.totalmergency.data.toLoc
 import es.unex.giiis.asee.totalmergency.view.home.HomeActivity
 import java.io.File
+import java.util.Date
+import java.util.Locale
 
 
 class Repository (
@@ -34,7 +37,9 @@ class Repository (
 ) {
     private var lastUpdateTimeMillis: Long = 0L
 
-
+    fun systemDate() : String{
+        return SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+    }
 
     val localizaciones = localizacionesDao.getAllUbications()
 

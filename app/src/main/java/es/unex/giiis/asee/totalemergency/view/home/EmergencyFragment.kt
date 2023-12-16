@@ -69,25 +69,6 @@ class EmergencyFragment : Fragment() {
             }
         }
 
-    private fun createVideoFile(timeStamp : String) : File? {
-
-        val storageDir: File? = requireContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES)
-
-        return storageDir?.let {
-            File.createTempFile(
-                "VIDEO_${timeStamp}_",
-                ".mp4",
-                it
-            ).apply {
-                // Save a file path for use with the captured video URI
-                videoUri = FileProvider.getUriForFile(
-                    (activity as HomeActivity),
-                    "es.unex.giiis.asee.totalmergency.fileprovider",
-                    this
-                )
-            }
-        }
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.obtainPermission(requireContext(), activity as HomeActivity)
