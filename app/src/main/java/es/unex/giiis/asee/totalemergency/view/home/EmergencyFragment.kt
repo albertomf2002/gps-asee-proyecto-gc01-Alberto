@@ -3,6 +3,7 @@ package es.unex.giiis.asee.totalmergency.view.home
 import android.Manifest
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.icu.text.SimpleDateFormat
@@ -18,18 +19,19 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
+import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import es.unex.giiis.asee.totalemergency.view.home.EmergencyViewModel
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
+import es.unex.giiis.asee.totalmergency.data.model.User
 import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
 import es.unex.giiis.asee.totalmergency.databinding.FragmentEmergencyBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -38,32 +40,19 @@ private const val ARG_PARAM2 = "param2"
  */
 class EmergencyFragment : Fragment() {
 
+    private val homeViewModel: HomeViewModel by activityViewModels()
+
     private var _binding: FragmentEmergencyBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var db: TotalEmergencyDatabase
-
-    val scope = CoroutineScope(Job() + Dispatchers.Main)
+    private val viewModel : EmergencyViewModel by viewModels { EmergencyViewModel.Factory }
 
     private val responseCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
             if(result.resultCode == RESULT_OK){
-                val videoUri = result.data?.data
-                val path = getPath(videoUri!!)
+                // ViewModel retrieves data.
+                viewModel.retrieveUriData(result.data?.data!!, requireContext())
 
-                Log.i("VIDEO_RECORD_TAG", "Video is recorded and available at uri: ${videoUri}")
-                Log.i("VIDEO_RECORD_TAG", "Video is recorded and available at path: ${path}")
-
-                val calendar: Calendar = Calendar.getInstance()
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                val dateTime: String = dateFormat.format(calendar.time)
-
-                Log.i("DATE TIME", "The date is: ${dateTime}")
-
-                val vr = VideoRecord(videoId= null, path= "$path", userId= (activity as HomeActivity).getUser().cod!!, date=dateTime)
-                scope.launch {
-                    insertNewVideo(vr)
-                }
             }else if(result.resultCode == RESULT_CANCELED){
                 Log.i("VIDEO_RECORD_TAG", "Video recording is cancelled")
             }else{
@@ -76,7 +65,8 @@ class EmergencyFragment : Fragment() {
         arguments?.let {
 
         }
-        scope
+
+
         if(isFrontCameraPresent()){
             Log.i("notice", "Camera is detected")
             getCameraPermission()
@@ -98,7 +88,9 @@ class EmergencyFragment : Fragment() {
 
         _binding = FragmentEmergencyBinding.inflate(inflater, container, false)
 
-        db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
+        homeViewModel.user.observe(viewLifecycleOwner) { us ->
+            viewModel.user = us
+        }
 
         return binding.root
     }
@@ -107,36 +99,31 @@ class EmergencyFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setUpListeners()
-        with(binding){
 
-
-        }
     }
 
-    fun getPath(uri: Uri): String? {
-        val projection = arrayOf(MediaStore.Video.Media.DATA)
-        val cursor = context?.contentResolver?.query(uri, projection, null, null, null)
-        cursor?.use {
-            Log.i("Cursor", "Trying to fetch the data")
-            if(it.moveToFirst()){
-                val columnIndex = it.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)
-                return it.getString(columnIndex)
-            }
-        }
-        return null
+    private fun observeCameraResponse(){
+        viewModel.cameraResponse.observe(viewLifecycleOwner, Observer { response ->
+            Log.d("OBSERVER", "The response is: [${response}]")
+        })
     }
+
 
     fun setUpListeners() {
-
+        /*
+        binding.emergency.setOnClickListener {
+            viewModel.onEmergencyClicked()
+        }*/
         with(binding){
             //emergencyButton.onKeyLongPress(3)
             emergency.setOnClickListener {
                 if (isFrontCameraPresent()) {
                     Log.i("suceso", "hay acceso a la cámara")
-                    //TODO: Añadir -> Hora, minutos y segundos al momento que fue grabado.  EL TIEMPO DEBE SER ANTES DE GRABAR
+
                     val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
                     responseCamera.launch(intent)
-                    //startActivityForResult(intent, 101)
+                    observeCameraResponse()
+
                 } else {
                     Log.e("error", "No hay acceso a la cámara")
                 }
@@ -162,9 +149,6 @@ class EmergencyFragment : Fragment() {
 
     }
 
-    private suspend fun insertNewVideo(vr: VideoRecord){
-        db.videoDAO().insert(vr)
-    }
 
     companion object {
         /**

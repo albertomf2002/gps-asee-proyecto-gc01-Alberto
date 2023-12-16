@@ -8,11 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
 import es.unex.giiis.asee.totalmergency.R
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
 import es.unex.giiis.asee.totalmergency.data.model.Contact
+import es.unex.giiis.asee.totalmergency.data.model.User
 import es.unex.giiis.asee.totalmergency.databinding.FragmentContactsBinding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -31,10 +34,14 @@ private const val ARG_PARAM2 = "param2"
 class ContactsFragment : Fragment() {
 
     private lateinit var listener: OnShowClickListener
+
+    private val homeViewModel: HomeViewModel by activityViewModels()
     interface OnShowClickListener{
         fun onShowClickCall(contact: Contact)
         fun onDeleteClickCall(contact: Contact)
     }
+
+    private lateinit var user: User
 
     private var _binding: FragmentContactsBinding? = null
     private val binding get() = _binding!!
@@ -70,6 +77,10 @@ class ContactsFragment : Fragment() {
 
         db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
 
+        homeViewModel.user.observe(viewLifecycleOwner) { us ->
+            user = us
+        }
+
         // Inflate the layout for this fragment
         return binding.root
     }
@@ -79,7 +90,7 @@ class ContactsFragment : Fragment() {
 
         with(binding){
             botonInsertar.setOnClickListener {
-                val contacto = Contact(null, insertarTelefono.text.toString().toLong(), nombreContacto.text.toString(), userId = (activity as HomeActivity).getUser().cod!!)
+                val contacto = Contact(null, insertarTelefono.text.toString().toLong(), nombreContacto.text.toString(), userId = user.cod!!)
                 lifecycleScope.launch {
 
                     Log.i("Contacto", "INSERTANDO NUEVO CONTACTO")
@@ -87,7 +98,7 @@ class ContactsFragment : Fragment() {
                     insertarTelefono.text = null
                     nombreContacto.text = null
 
-                    contacts = db.contactDAO().getAllContactsFromUser((activity as HomeActivity).getUser().cod!!)
+                    contacts = db.contactDAO().getAllContactsFromUser(user.cod!!)
 
                     setUpRecyclerView()
 
@@ -96,7 +107,7 @@ class ContactsFragment : Fragment() {
         }
 
         GlobalScope.launch {
-            contacts = db.contactDAO().getAllContactsFromUser((activity as HomeActivity).getUser().cod!!)
+            contacts = db.contactDAO().getAllContactsFromUser(user.cod!!)
 
             setUpRecyclerView()
         }
