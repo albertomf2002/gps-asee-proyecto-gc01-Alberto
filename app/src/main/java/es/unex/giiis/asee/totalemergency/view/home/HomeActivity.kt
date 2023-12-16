@@ -169,6 +169,10 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
             viewModel.borrarContact(contact.contactId!!)
         }
     }
+
+    override fun onClickDelete(contact: Contact) {
+        //Nothing, yet
+    }
     /*
     override fun onShowClick(show: Show) {
         val action = DiscoverFragmentDirections.actionDiscoverFragmentToShowDetailFragment(show)
