@@ -44,7 +44,7 @@ class HomeMenuFragment : Fragment() {
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
-
+        Log.i("Map", "Callback started")
         val caceres = LatLng(39.4743, -6.3710)
         googleMap.addMarker(MarkerOptions().position(caceres).title("Marker in caceres"))
 

@@ -43,9 +43,6 @@ class ContactsAdapter(
         }
     }
 
-    fun updater(){
-        notifyDataSetChanged()
-    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactsAdapter.ShowViewHolder {
         val binding =
             ContactItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
