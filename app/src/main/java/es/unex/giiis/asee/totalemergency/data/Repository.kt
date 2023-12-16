@@ -5,10 +5,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import es.unex.giiis.asee.totalemergency.data.database.dao.ContactDAO
 import es.unex.giiis.asee.totalemergency.data.database.dao.LocalizacionesDAO
 import es.unex.giiis.asee.totalemergency.data.database.dao.UserDAO
@@ -91,6 +93,7 @@ class Repository (
             return tryStoreVideo(videoFile.path!!, fileUser, timeStamp)
         }
     }
+
 
     fun isBackCameraPresent(context: Context): Boolean {
         return context?.packageManager?.hasSystemFeature(PackageManager.FEATURE_CAMERA_EXTERNAL)?: false

@@ -143,6 +143,8 @@ class EmergencyFragment : Fragment() {
                 viewModel.cameraPermission.observe(viewLifecycleOwner, Observer { response ->
                     if(response){
                         Log.i("Acceso", "Existe acceso a la camara")
+
+
                         val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
                         responseCamera.launch(intent)
                         observeCameraResponse()
