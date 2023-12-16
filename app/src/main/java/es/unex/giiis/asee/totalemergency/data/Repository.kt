@@ -10,6 +10,7 @@ import es.unex.giiis.asee.totalemergency.data.database.dao.UserDAO
 import es.unex.giiis.asee.totalemergency.data.database.dao.VideoRecordDAO
 import es.unex.giiis.asee.totalmergency.api.APIError
 import es.unex.giiis.asee.totalmergency.api.UbicationAPI
+import es.unex.giiis.asee.totalmergency.data.model.User
 import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
 import es.unex.giiis.asee.totalmergency.data.toLoc
 import es.unex.giiis.asee.totalmergency.view.home.HomeActivity
@@ -30,6 +31,13 @@ class Repository (
         videoRecordDao.insert(vr)
     }
 
+    suspend fun getUserFromCod(cod: Long) : User{
+        return userDao.findByCod(cod)
+    }
+
+    suspend fun deleteContactFromCod(cod : Long){
+        contactDao.deleteFromId(cod)
+    }
     suspend fun tryUpdateRecentLocationCache() {
         if (shouldUpdateLocationCache()) fetchRecentUbications()
     }

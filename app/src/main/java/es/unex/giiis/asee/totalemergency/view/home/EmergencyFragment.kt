@@ -19,10 +19,13 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
+import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import es.unex.giiis.asee.totalemergency.view.home.EmergencyViewModel
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
+import es.unex.giiis.asee.totalmergency.data.model.User
 import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
 import es.unex.giiis.asee.totalmergency.databinding.FragmentEmergencyBinding
 import kotlinx.coroutines.CoroutineScope
@@ -36,6 +39,10 @@ import kotlinx.coroutines.launch
  * create an instance of this fragment.
  */
 class EmergencyFragment : Fragment() {
+
+    private val homeViewModel: HomeViewModel by activityViewModels()
+
+    private lateinit var user: User
 
     private var _binding: FragmentEmergencyBinding? = null
     private val binding get() = _binding!!
@@ -83,6 +90,10 @@ class EmergencyFragment : Fragment() {
 
         _binding = FragmentEmergencyBinding.inflate(inflater, container, false)
 
+        homeViewModel.user.observe(viewLifecycleOwner) { us ->
+            user = us
+        }
+
         return binding.root
     }
 
@@ -120,8 +131,6 @@ class EmergencyFragment : Fragment() {
                 }
             }
         }
-
-
     }
 
     private fun isBackCameraPresent(): Boolean {
