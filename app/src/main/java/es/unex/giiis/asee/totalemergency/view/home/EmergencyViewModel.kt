@@ -21,6 +21,9 @@ import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
 import es.unex.giiis.asee.totalmergency.view.home.HomeActivity
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.io.File
+import java.util.Date
+import java.util.Locale
 
 class EmergencyViewModel (
     private val repository: Repository,
@@ -39,25 +42,12 @@ class EmergencyViewModel (
         viewModelScope.launch {
             // Get the variables
             val videoUri = uri
-            val path = repository.getPath(videoUri, context)
+            val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+            val videoFileName = "VIDEO_${timeStamp}.mp4"
 
-            Log.i("VIDEO_RECORD_TAG", "Video is recorded and available at path: ${path}")
-            //Sacar la fecha
-            val calendar: Calendar = Calendar.getInstance()
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-            val dateTime: String = dateFormat.format(calendar.time)
+            val codInserted = repository.FP_CrearVideo(videoUri, videoFileName, user?.cod!!, timeStamp, context)
 
-            Log.i("DATE TIME", "The date is: ${dateTime}")
-            // Patron repository se encarga de manejar la BD.
-            val codInserted = repository.tryStoreVideo(path!!, user?.cod!!, dateTime)
-            /*
-             Actualizo la respuesta.
-             La vista vinculada (?) (EmergencyFragment, pero puede ser cualquier otra que lo llegase a requerir)
-                * Recibe respuesta.
-             */
-
-            _cameraResponse.value = Pair<Long, String>(codInserted,if(codInserted != -1L) "Camera response, video inserted with cod:${codInserted}" else "Video failed to be created")
-
+            _cameraResponse.value = Pair(codInserted,if(codInserted != -1L) "Camera response, video inserted with cod:${codInserted}" else "Video failed to be created")
         }
     }
 

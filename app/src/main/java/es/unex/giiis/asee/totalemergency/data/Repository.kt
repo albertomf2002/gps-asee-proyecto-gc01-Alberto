@@ -19,6 +19,7 @@ import es.unex.giiis.asee.totalmergency.data.model.User
 import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
 import es.unex.giiis.asee.totalmergency.data.toLoc
 import es.unex.giiis.asee.totalmergency.view.home.HomeActivity
+import java.io.File
 
 
 class Repository (
@@ -60,6 +61,34 @@ class Repository (
         {
             Log.i("Repository: Permission request", "Permission request successfully called")
             ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.CAMERA), 100)
+        }
+    }
+
+    /**
+     * Esta funcion del repositorio se encarga de crear video
+     * según el FileProvider.
+     *
+     * @param uri Uri del video a almacenar
+     * @param fileName nombre con el cual guardar el video
+     * @param fileUser codigo del usuario asociado al video.
+     * @param timeStam fecha en la cual se grabó el video
+     * @param context Contexto desde el cual se llamó
+     *
+     * @return Long : Retorna el código identificador dentro de la base de datos.
+     * */
+    suspend fun FP_CrearVideo(uri:Uri, fileName : String, fileUser : Long, timeStamp:String, context: Context) : Long{
+
+        uri.let { it ->
+            val folderName = "es.unex.giiis.asee.totalemergency.videos"
+            val folderPath = context.getDir(folderName, Context.MODE_PRIVATE).absolutePath
+            val videoFile = File(folderPath, fileName)
+            val inputStream = context.contentResolver.openInputStream(it)
+            inputStream?.use { input ->
+                videoFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+            return tryStoreVideo(videoFile.path!!, fileUser, timeStamp)
         }
     }
 

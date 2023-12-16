@@ -60,37 +60,9 @@ class EmergencyFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
             if(result.resultCode == RESULT_OK){
 
-                videoUri = result.data?.data!!
-                videoUri.let { it ->
-                    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-                    val videoFileName = "VIDEO_${timeStamp}.mp4"
-
-                    val folderName = "es.unex.giiis.asee.totalemergency.videos"
-                    val folderPath = requireContext().getDir(folderName, Context.MODE_PRIVATE).absolutePath
-                    val videoFile = File(folderPath, videoFileName)
-                    val inputStream = requireContext().contentResolver.openInputStream(it)
-                    inputStream?.use { input ->
-                        videoFile.outputStream().use { output ->
-                            input.copyTo(output)
-                        }
-                    }
-                    val vr = VideoRecord(videoId= null, path= "${videoFile.path}", userId= (activity as HomeActivity).getUser().cod!!, date=timeStamp)
-
-                    scope.launch {
-                        insertNewVideo(vr)
-                    }
-
-
-                }
-                //TODO: HotFix
+                //Pass the uri to view model, view model will pass it to Repository.
+                //Manage files
                 viewModel.retrieveUriData(result.data?.data!!, requireContext())
-
-                Log.i("VIDEO_RECORD_TAG", "Other form of path: ${videoUri.path}")
-                Log.i("VIDEO_RECORD_TAG", "Video is recorded and available at uri: ${videoUri}")
-                Log.i("VIDEO_RECORD_TAG", "Video uri authority: ${videoUri.authority}")
-
-                Log.i("VIDEO_RECORD_TAG", "Video is recorded and available at uri: ${videoUri}")
-                Log.i("VIDEO_RECORD_TAG", "Video uri authority: ${videoUri.authority}")
 
             }else if(result.resultCode == RESULT_CANCELED){
                 Log.i("VIDEO_RECORD_TAG", "Video recording is cancelled")
@@ -116,16 +88,8 @@ class EmergencyFragment : Fragment() {
             }
         }
     }
-
-    /* val folderName = "es.unex.giiis.asee.totalemergency.videos"
-                val internalDir = requireContext().getDir(folderName, Context.MODE_PRIVATE)
-                Log.i("DIR", "The dir name is: ${internalDir.name}")
-                Log.i("DIR", "The dir path is: ${internalDir.path}")
-                Log.i("DIR", "The dir parent is: ${internalDir.parent}")
-                */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         viewModel.obtainPermission(requireContext(), activity as HomeActivity)
     }
 
