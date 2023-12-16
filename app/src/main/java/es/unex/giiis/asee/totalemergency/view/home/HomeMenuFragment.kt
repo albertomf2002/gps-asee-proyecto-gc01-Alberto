@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 
@@ -21,6 +22,7 @@ import es.unex.giiis.asee.totalemergency.TotalEmergencyApplication
 import es.unex.giiis.asee.totalemergency.data.Repository
 import es.unex.giiis.asee.totalemergency.data.model.Localizaciones
 import es.unex.giiis.asee.totalemergency.view.home.HomeMenuViewModel
+import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
 import es.unex.giiis.asee.totalemergency.view.home.UserProvider
 
 
@@ -45,10 +47,10 @@ class HomeMenuFragment : Fragment() {
     private var _binding: FragmentHomeMenuBinding? = null
     private val binding get() = _binding!!
 
-    private var listadoCentrosSalud: List<Localizaciones>? = null
+    private var listadoCentrosSalud: List<Localizaciones>? = listOf()
 
     private val viewModel : HomeMenuViewModel by viewModels{ HomeMenuViewModel.Factory }
-    private lateinit var user: User
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -63,6 +65,7 @@ class HomeMenuFragment : Fragment() {
 
         val caceres = LatLng(39.4743, -6.3710)
         googleMap.addMarker(MarkerOptions().position(caceres).title("Marker in caceres"))
+
 
         if(listadoCentrosSalud!!.isNotEmpty()){
             var incr = 1
@@ -93,10 +96,12 @@ class HomeMenuFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.i("OnViewCreated", "Creating view")
 
-        val userProvider = activity as UserProvider
-        user = userProvider.getUser()
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        mapFragment?.getMapAsync(callback)
 
-        viewModel.user = user
+        homeViewModel.user.observe(viewLifecycleOwner) { us ->
+            viewModel.user = us
+        }
 
         viewModel.toast.observe(viewLifecycleOwner) { text ->
             text?.let {

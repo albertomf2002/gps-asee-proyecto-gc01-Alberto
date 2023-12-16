@@ -1,9 +1,14 @@
 package es.unex.giiis.asee.totalemergency.data
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import es.unex.giiis.asee.totalemergency.data.database.dao.ContactDAO
 import es.unex.giiis.asee.totalemergency.data.database.dao.LocalizacionesDAO
 import es.unex.giiis.asee.totalemergency.data.database.dao.UserDAO
@@ -48,6 +53,24 @@ class Repository (
     }
 
 
+    fun requestCameraPermission(context: Context, activity : Activity) {
+        Log.i("Repository: Permission request", "Permission request called")
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+            == PackageManager.PERMISSION_DENIED)
+        {
+            Log.i("Repository: Permission request", "Permission request successfully called")
+            ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.CAMERA), 100)
+        }
+    }
+
+    fun isBackCameraPresent(context: Context): Boolean {
+        return context?.packageManager?.hasSystemFeature(PackageManager.FEATURE_CAMERA_EXTERNAL)?: false
+    }
+    fun isFrontCameraPresent(context: Context) : Boolean {
+        return context?.packageManager?.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT)?: false
+    }
+
+
     fun getPath(uri: Uri, context: Context): String? {
         val projection = arrayOf(MediaStore.Video.Media.DATA)
         val cursor = context.contentResolver?.query(uri, projection, null, null, null)
@@ -64,6 +87,7 @@ class Repository (
     private suspend fun fetchRecentUbications() {
         Log.d("Repository", "Fetching data from ubications")
         try {
+            Log.d("Repository", "PRE DANGER")
             val localizaciones = networkService.getAllUbications().map { it.toLoc() }
             Log.d("Repository", "Data has been read: ${localizaciones.size}")
             localizacionesDao.insertAll(localizaciones)
