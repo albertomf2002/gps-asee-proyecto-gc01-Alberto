@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -19,6 +21,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 import es.unex.giiis.asee.totalemergency.TotalEmergencyApplication
 import es.unex.giiis.asee.totalemergency.data.Repository
 import es.unex.giiis.asee.totalemergency.data.model.Localizaciones
+import es.unex.giiis.asee.totalemergency.view.home.HomeMenuViewModel
+import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
+import es.unex.giiis.asee.totalemergency.view.home.UserProvider
 
 
 import es.unex.giiis.asee.totalmergency.R
@@ -29,6 +34,7 @@ import es.unex.giiis.asee.totalmergency.data.api.CentrosSalud
 import es.unex.giiis.asee.totalmergency.api.getNetworkService
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
 import es.unex.giiis.asee.totalmergency.data.model.Ubication
+import es.unex.giiis.asee.totalmergency.data.model.User
 import es.unex.giiis.asee.totalmergency.databinding.FragmentHomeMenuBinding
 import es.unex.giiis.asee.totalmergency.util.BACKGROUND
 import kotlinx.coroutines.Dispatchers
@@ -41,9 +47,10 @@ class HomeMenuFragment : Fragment() {
     private var _binding: FragmentHomeMenuBinding? = null
     private val binding get() = _binding!!
 
-    private var listadoCentrosSalud: List<Localizaciones>? = null
+    private var listadoCentrosSalud: List<Localizaciones>? = listOf()
 
-    private lateinit var repository: Repository
+    private val viewModel : HomeMenuViewModel by viewModels{ HomeMenuViewModel.Factory }
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -59,6 +66,7 @@ class HomeMenuFragment : Fragment() {
         val caceres = LatLng(39.4743, -6.3710)
         googleMap.addMarker(MarkerOptions().position(caceres).title("Marker in caceres"))
 
+
         if(listadoCentrosSalud!!.isNotEmpty()){
             var incr = 1
             for(loc in listadoCentrosSalud!!){
@@ -71,12 +79,6 @@ class HomeMenuFragment : Fragment() {
             }
         }
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(caceres))
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        // db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
-        //repository = Repository.getInstance(db.localizacionesDao(),getNetworkService())
     }
 
     override fun onCreateView(
@@ -94,20 +96,27 @@ class HomeMenuFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.i("OnViewCreated", "Creating view")
 
-        val appContainer = (this.activity?.application as TotalEmergencyApplication).appContainer
-        repository = appContainer.repository
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        mapFragment?.getMapAsync(callback)
 
+        homeViewModel.user.observe(viewLifecycleOwner) { us ->
+            viewModel.user = us
+        }
 
+        viewModel.toast.observe(viewLifecycleOwner) { text ->
+            text?.let {
+                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                viewModel.onToastShown()
+            }
+        }
         updateMapUI()
-        launchDataLoad { repository.tryUpdateRecentLocationCache() }
-
 
         Log.i("OnViewCreated", "EL RESULTADO ES: ${listadoCentrosSalud}")
         Log.i("OnViewCreated", "View finished")
     }
 
     private fun updateMapUI(){
-        repository.localizaciones.observe(viewLifecycleOwner) { localizaciones ->
+        viewModel.localizaciones.observe(viewLifecycleOwner) { localizaciones ->
             listadoCentrosSalud = localizaciones
 
             Log.d("MAP DATA","The list size is: ${localizaciones.size}")
@@ -116,37 +125,4 @@ class HomeMenuFragment : Fragment() {
             mapFragment?.getMapAsync(callback)
         }
     }
-
-    private fun launchDataLoad(block: suspend () -> Unit): Job {
-        return lifecycleScope.launch {
-            try{
-                block()
-            } catch (error: APIError){
-                Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
-            } finally {
-
-            }
-        }
-    }
-
-    /*
-    private suspend fun fetchUbications(): List<CentrosSalud> {
-        return withContext(Dispatchers.IO) {
-            var apiUbication = listOf<CentrosSalud>()
-            Log.i("OnViewCreated", "Before fetching data on background")
-            val result = try{
-                getNetworkService().getAllUbications().execute()
-            } catch (cause: Throwable){
-                throw APIError("Unable to fetch data from API", cause)
-            }
-
-            if(result.isSuccessful){
-                apiUbication = result.body()!!
-            }else{
-                throw APIError("API response error ${result.errorBody()}", null)
-            }
-            apiUbication
-        }
-    }
-    */
 }

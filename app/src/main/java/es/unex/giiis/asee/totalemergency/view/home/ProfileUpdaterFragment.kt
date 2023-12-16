@@ -7,8 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
+import es.unex.giiis.asee.totalmergency.data.model.User
 import es.unex.giiis.asee.totalmergency.databinding.FragmentProfileUpdaterBinding
 import es.unex.giiis.asee.totalmergency.view.LoginActivity
 import kotlinx.coroutines.launch
@@ -25,6 +28,10 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class ProfileUpdaterFragment : Fragment() {
+
+    private val homeViewModel: HomeViewModel by activityViewModels()
+
+    private lateinit var user: User
 
     private var _binding : FragmentProfileUpdaterBinding? = null
     private val binding get() = _binding!!
@@ -46,6 +53,10 @@ class ProfileUpdaterFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentProfileUpdaterBinding.inflate(inflater, container, false)
+
+        homeViewModel.user.observe(viewLifecycleOwner) { us ->
+            user = us
+        }
 
         db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
 
@@ -86,7 +97,7 @@ class ProfileUpdaterFragment : Fragment() {
             buttonDelete.setOnClickListener {
                 Log.i("ELIMINAR", "Borrando usuario y su informacion")
                 lifecycleScope.launch{
-                    val cod = (activity as HomeActivity).getUser().cod!!
+                    val cod = user.cod!!
                     db.userDao().deleteByCod(cod)
 
                     db.videoDAO().deleteFromUserId(cod) //TODO: Clear videos from memory

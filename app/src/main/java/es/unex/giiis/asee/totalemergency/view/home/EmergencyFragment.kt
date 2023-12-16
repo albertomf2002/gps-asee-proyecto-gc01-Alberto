@@ -21,7 +21,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.fragment.app.activityViewModels
+import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import es.unex.giiis.asee.totalemergency.view.home.EmergencyViewModel
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
+import es.unex.giiis.asee.totalmergency.data.model.User
 import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
 import es.unex.giiis.asee.totalmergency.databinding.FragmentEmergencyBinding
 import kotlinx.coroutines.CoroutineScope
@@ -41,14 +47,14 @@ import java.util.Locale
  */
 class EmergencyFragment : Fragment() {
 
+    private val homeViewModel: HomeViewModel by activityViewModels()
+
     private var _binding: FragmentEmergencyBinding? = null
 
     private lateinit var videoUri : Uri
     private val binding get() = _binding!!
 
-    private lateinit var db: TotalEmergencyDatabase
-
-    val scope = CoroutineScope(Job() + Dispatchers.Main)
+    private val viewModel : EmergencyViewModel by viewModels { EmergencyViewModel.Factory }
 
     private val responseCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
@@ -61,7 +67,6 @@ class EmergencyFragment : Fragment() {
 
                     val folderName = "es.unex.giiis.asee.totalemergency.videos"
                     val folderPath = requireContext().getDir(folderName, Context.MODE_PRIVATE).absolutePath
-
                     val videoFile = File(folderPath, videoFileName)
                     val inputStream = requireContext().contentResolver.openInputStream(it)
                     inputStream?.use { input ->
@@ -77,17 +82,9 @@ class EmergencyFragment : Fragment() {
 
 
                 }
+                //TODO: HotFix
+                viewModel.retrieveUriData(result.data?.data!!, requireContext())
 
-                /*
-                videoUri.let{ uri ->
-                    val inputStream = requireContext().contentResolver.openInputStream(uri)
-                    inputStream?.use { input ->
-                        videoFile?.outputStream().use { output ->
-                            input.copyTo(output!!)
-                        }
-                    }
-                }
-                */
                 Log.i("VIDEO_RECORD_TAG", "Other form of path: ${videoUri.path}")
                 Log.i("VIDEO_RECORD_TAG", "Video is recorded and available at uri: ${videoUri}")
                 Log.i("VIDEO_RECORD_TAG", "Video uri authority: ${videoUri.authority}")
@@ -97,8 +94,6 @@ class EmergencyFragment : Fragment() {
 
             }else if(result.resultCode == RESULT_CANCELED){
                 Log.i("VIDEO_RECORD_TAG", "Video recording is cancelled")
-            }else{
-                Log.i("VIDEO_RECORD_TAG", "Something bad happened, i guess")
             }
         }
 
@@ -130,21 +125,8 @@ class EmergencyFragment : Fragment() {
                 */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
 
-        }
-        scope
-        if(isFrontCameraPresent()){
-            Log.i("notice", "Camera is detected")
-            getCameraPermission()
-        }else {
-            if (isBackCameraPresent()) {
-                Log.i("notice", "Back camera is detected")
-                getCameraPermission()
-            } else {
-                Log.i("notice", "No camera is detected")
-            }
-        }
+        viewModel.obtainPermission(requireContext(), activity as HomeActivity)
     }
 
     override fun onCreateView(
@@ -155,7 +137,9 @@ class EmergencyFragment : Fragment() {
 
         _binding = FragmentEmergencyBinding.inflate(inflater, container, false)
 
-        db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
+        homeViewModel.user.observe(viewLifecycleOwner) { us ->
+            viewModel.user = us
+        }
 
         return binding.root
     }
@@ -164,10 +148,13 @@ class EmergencyFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setUpListeners()
-        with(binding){
 
+    }
 
-        }
+    private fun observeCameraResponse(){
+        viewModel.cameraResponse.observe(viewLifecycleOwner, Observer { response ->
+            Log.d("OBSERVER", "The response is: [${response}]")
+        })
     }
 
     fun getPath(uri: Uri): String? {
@@ -188,43 +175,19 @@ class EmergencyFragment : Fragment() {
         with(binding){
             //emergencyButton.onKeyLongPress(3)
             emergency.setOnClickListener {
-                if (isFrontCameraPresent()) {
-                    Log.i("suceso", "hay acceso a la cámara")
-                    //TODO: Añadir -> Hora, minutos y segundos al momento que fue grabado.  EL TIEMPO DEBE SER ANTES DE GRABAR
-                    val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
-                    responseCamera.launch(intent)
-                    //startActivityForResult(intent, 101)
 
-                } else {
-                    Log.e("error", "No hay acceso a la cámara")
-                }
-
-
-
+                viewModel.cameraPermission.observe(viewLifecycleOwner, Observer { response ->
+                    if(response){
+                        Log.i("Acceso", "Existe acceso a la camara")
+                        val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+                        responseCamera.launch(intent)
+                        observeCameraResponse()
+                    }else{
+                        Log.i("Acceso", "NO Existe acceso a la camara")
+                    }
+                })
             }
         }
-    }
-
-    private fun isBackCameraPresent(): Boolean {
-        return context?.packageManager?.hasSystemFeature(PackageManager.FEATURE_CAMERA_EXTERNAL)?: false
-    }
-    fun isFrontCameraPresent() : Boolean {
-        return context?.packageManager?.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT)?: false
-    }
-
-    fun getCameraPermission() {
-        Log.i("Permission request", "Permission request called")
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
-            == PackageManager.PERMISSION_DENIED
-        ) {
-            Log.i("Permission request", "Permission request successfully called")
-            ActivityCompat.requestPermissions(activity as HomeActivity, arrayOf(Manifest.permission.CAMERA), 100)
-        }
-
-    }
-
-    private suspend fun insertNewVideo(vr: VideoRecord){
-        db.videoDAO().insert(vr)
     }
 
     companion object {

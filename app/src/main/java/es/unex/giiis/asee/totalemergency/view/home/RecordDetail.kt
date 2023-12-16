@@ -17,8 +17,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import es.unex.giiis.asee.totalemergency.view.home.RecordDetailViewModel
+import es.unex.giiis.asee.totalmergency.R
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
 import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
 import es.unex.giiis.asee.totalmergency.databinding.FragmentRecordDetailBinding
@@ -35,6 +38,8 @@ import java.io.IOException
  */
 class RecordDetail : Fragment() {
 
+    private val viewModel : RecordDetailViewModel by viewModels { RecordDetailViewModel.Factory }
+
     private var _binding: FragmentRecordDetailBinding? = null
     private val binding get() = _binding!!
 
@@ -44,54 +49,12 @@ class RecordDetail : Fragment() {
     private var path: String? = null
     private lateinit var fdelete: File
 
+
     private val args: RecordDetailArgs by navArgs()
 
-    private val responseDocument =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
-            if(result.resultCode == Activity.RESULT_OK) {
-
-                MediaScannerConnection.scanFile((activity as HomeActivity).applicationContext,
-                    arrayOf<String>(fdelete.getAbsolutePath()),
-                    null,
-                    OnScanCompletedListener { new_path, uri ->
-                        //DocumentFile.fromSingleUri(requireContext().applicationContext,uri)!!.delete();
-
-                        //requireContext().applicationContext.contentResolver.delete(uri, null, null)
-                        val contentResolver = requireContext().contentResolver
-
-                        val cursor = contentResolver.query(uri, null, null, null, null)
-                        cursor?.use { cursor ->
-                            if (cursor.moveToFirst()) {
-                                val columnIndex1 =
-                                    cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME)
-                                val columnIndex2 = cursor.getColumnIndex(OpenableColumns.SIZE)
-                                val displayName =
-                                    if (columnIndex1 != -1) cursor.getString(columnIndex1) else -1
-                                val size =
-                                    if (columnIndex2 != -1) cursor.getLong(columnIndex2) else -1
-                                // Add more attributes you need here
-                                Log.i("FILE_DATA", "Name: ${displayName}")
-                                // Perform operations on the document using DocumentFile
-                                val documentFile = DocumentFile.fromSingleUri(requireContext(), uri)
-                                if (documentFile != null && documentFile.exists()) {
-                                    // Perform operations such as read, write, delete, etc., on the document
-                                    // Example: val inputStream: InputStream? = contentResolver.openInputStream(uri)
-                                    // Example: val outputStream: OutputStream? = contentResolver.openOutputStream(uri)
-                                    // Example: documentFile.delete()
-                                    //if(documentFile.delete()){
-                                    //    Log.i("documentFile", "DELETE")
-                                    //}else{
-                                    //    Log.i("documentFile", "NOT DELETE")
-                                    //}
-                                }
-                            }
-                        }
-                    }
-                )
-            }
-        }
-
-
+    // TODO: Rename and change types of parameters
+    private var param1: String? = null
+    private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,10 +71,13 @@ class RecordDetail : Fragment() {
         video = args.VideoUri
 
         path = video?.path
-        Log.i("PATH", "The path data ${path} is checked")
         fdelete = File(path!!)
-        Log.i("FILE", "The file path ${fdelete.path} is checked")
 
+        viewModel.video = args.VideoUri
+        viewModel.path = viewModel.video?.path
+
+        Log.i("PATH", "The path data ${path} is checked")
+        Log.i("FILE", "The file path ${fdelete.path} is checked")
 
         _binding = FragmentRecordDetailBinding.inflate(inflater, container, false)
         return binding.root
@@ -120,20 +86,16 @@ class RecordDetail : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        Log.i("PATH", "The path is: ${path}")
-        //var mediaPlayer = MediaPlayer.create(context, uri)
-
         with(binding){
             //videoView.setVideoURI(uri)
             val db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
 
-            if(path == null){
+            if(viewModel.path == null){
                 lifecycleScope.launch {
                     db.videoDAO().deleteFromId(video?.videoId!!)
                 }
             }else {
-                videoView.setVideoPath(path)
+                videoView.setVideoPath(viewModel.path)
                 videoView.start()
             }
 
@@ -141,6 +103,17 @@ class RecordDetail : Fragment() {
                 videoView.stopPlayback()
 
                 Log.d("INTENT", "REQUEST OPEN DOCUMENT")
+                val fdelete = File(viewModel.path!!)
+                try {
+                    //fdelete.delete()
+                    //FileUtils.forceDelete(fdelete)
+                    Log.i("DELETE", "Video has been successfully deleted")
+                    lifecycleScope.launch {
+                       // db.videoDAO().deleteFromId(video?.videoId!!)
+                    }
+                } catch (e: Exception){
+                    Log.e("DELETE", "ERROR: Video cant be deleted, reason: ${e.message}")
+                }
 
                 if(fdelete.delete()){
                     Log.i("DELETE", "It was succesfully deleted")
@@ -150,48 +123,15 @@ class RecordDetail : Fragment() {
                 }else{
                     Log.i("DELETE", "It was NOT succesfully deleted")
                 }
-                /*
-                val filePath = "VIDEO_20231215_151453.mp4" // File name or just the file name without path
 
 
-                try {
-                    val isDeleted = requireContext().deleteFile(filePath)
-                    if(isDeleted){
-                        Log.i("DELETE", "It was succesfully deleted")
-                    }else{
-                        Log.i("DELETE", "It was NOT succesfully deleted")
-                    }
 
-                }catch (e: Exception) {
-                    e.printStackTrace()
-                }*/
-
-               /*
-                MediaScannerConnection.scanFile((activity as HomeActivity).applicationContext,
-                    arrayOf<String>(fdelete.getAbsolutePath()),
-                    null,
-                    OnScanCompletedListener { new_path, uri ->
-
-                        Log.i("URI2", "The uri is: ${uri}")
-                        Log.i("URI2", "The authority is: ${uri.authority}")
-                    }
-                )
-                 */
-
-                /*
-                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-                intent.addCategory(Intent.CATEGORY_OPENABLE)
-                intent.type = "video/a*" // Set MIME type here, for example, "image/a*" for images
-                responseDocument.launch(intent)
-                Log.d("INTENT", "RESPONSE OPEN DOCUMENT")
-                */
             }
         }
     }
     private fun getFileUriFromPath(filePath: String): Uri? {
         val file = File(filePath)
         return if (file.exists()) {
-
             FileProvider.getUriForFile(
                 requireContext(),
                 "es.unex.giiis.asee.totalmergency.fileprovider",
@@ -212,7 +152,6 @@ class RecordDetail : Fragment() {
          * @return A new instance of fragment RecordDetail.
          */
 
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             RecordDetail().apply {
