@@ -1,6 +1,5 @@
 package es.unex.giiis.asee.totalmergency.view.home
 
-import android.content.Context
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
@@ -11,36 +10,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import es.unex.giiis.asee.totalemergency.TotalEmergencyApplication
-import es.unex.giiis.asee.totalemergency.data.Repository
 import es.unex.giiis.asee.totalemergency.data.model.Localizaciones
 import es.unex.giiis.asee.totalemergency.view.home.HomeMenuViewModel
 import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
-import es.unex.giiis.asee.totalemergency.view.home.UserProvider
 
 
 import es.unex.giiis.asee.totalmergency.R
-import es.unex.giiis.asee.totalmergency.api.APICallback
-import es.unex.giiis.asee.totalmergency.api.APIError
-import es.unex.giiis.asee.totalmergency.api.UbicationAPI
-import es.unex.giiis.asee.totalmergency.data.api.CentrosSalud
-import es.unex.giiis.asee.totalmergency.api.getNetworkService
-import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
-import es.unex.giiis.asee.totalmergency.data.model.Ubication
-import es.unex.giiis.asee.totalmergency.data.model.User
 import es.unex.giiis.asee.totalmergency.databinding.FragmentHomeMenuBinding
-import es.unex.giiis.asee.totalmergency.util.BACKGROUND
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HomeMenuFragment : Fragment() {
 
