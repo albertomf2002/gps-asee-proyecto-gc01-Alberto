@@ -9,31 +9,30 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.widget.SearchView
-import androidx.navigation.NavArgument
-import androidx.navigation.NavArgumentBuilder
-import androidx.navigation.NavType
+import androidx.activity.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
 
 import es.unex.giiis.asee.totalmergency.R
-import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
 import es.unex.giiis.asee.totalmergency.data.model.Contact
 import es.unex.giiis.asee.totalmergency.databinding.ActivityHomeBinding
-import es.unex.giiis.asee.totalmergency.data.model.User
 import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
-class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickListener, ContactsFragment.OnShowClickListener {
+class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickListener, ContactsFragment.OnShowClickListener
+{
+
+    //Factory necesaria para recuperar usuario
+    private val viewModel : HomeViewModel by viewModels { HomeViewModel.Factory }
 
     val scope = CoroutineScope(Job() + Dispatchers.Main)
-    private lateinit var db: TotalEmergencyDatabase
+
     private lateinit var binding: ActivityHomeBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -41,13 +40,9 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
         (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
     }
 
-
-
     companion object {
         const val USER_INFO = "USER_INFO"
         const val USER_COD_INFO = "USER_COD_INFO"
-
-        private var my_user:User = User()
 
         private var userCod:Long = -1
         fun start(
@@ -57,7 +52,7 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
             val intent = Intent(context, HomeActivity::class.java).apply {
                 putExtra(USER_COD_INFO, cod)
             }
-            //my_user = user;
+
             userCod = cod;
 
             Log.i("API", "el user cod es ${userCod}")
@@ -65,34 +60,29 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
         }
     }
 
-    fun getUser(): User {
-        return my_user
-    }
+    //fun getUser(): User {
+    //    return my_user
+    //}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-        //database initialization
-        db = TotalEmergencyDatabase.getInstance(applicationContext)!!
-
+        //viewModel.userCodInSession = userCod
+        viewModel.obtenerUser(userCod)
 
 
-        scope.launch {
-            my_user = db.userDao().findByCod(userCod)
-            Log.i("User data", "User is retrieved from database")
 
-            setUpUI(my_user)
-            setUpListeners()
-        }
+        Log.i("User data", "User is retrieved from database")
+
+        setUpUI()
+        setUpListeners()
+
     }
 
-    fun setUpUI(user: User) {
+    fun setUpUI() {
         binding.bottomNavigation.setupWithNavController(navController)
             appBarConfiguration = AppBarConfiguration(
                 setOf(
@@ -176,10 +166,7 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
 
     override fun onDeleteClickCall(contact: Contact) {
         if (contact.contactId != null) {
-            scope.launch {
-                Log.i("CALL", "Deleting the phone id")
-                db.contactDAO().deleteFromId(contact.contactId!!)
-            }
+            viewModel.borrarContact(contact.contactId!!)
         }
     }
     /*

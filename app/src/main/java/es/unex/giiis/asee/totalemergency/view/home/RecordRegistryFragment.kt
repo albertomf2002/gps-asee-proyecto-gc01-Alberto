@@ -8,9 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
 import es.unex.giiis.asee.totalmergency.R
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
+import es.unex.giiis.asee.totalmergency.data.model.User
 import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
 import es.unex.giiis.asee.totalmergency.databinding.FragmentRecordRegistryBinding
 import kotlinx.coroutines.CoroutineScope
@@ -33,6 +36,10 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class RecordRegistryFragment : Fragment() {
+
+    private val homeViewModel: HomeViewModel by activityViewModels()
+
+    private lateinit var user: User
 
     private lateinit var listener: OnShowClickListener
 
@@ -74,6 +81,10 @@ class RecordRegistryFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentRecordRegistryBinding.inflate(inflater, container, false)
 
+        homeViewModel.user.observe(viewLifecycleOwner) { us ->
+            user = us
+        }
+
         db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
 
         //Log.i("TOTAL_VIDEOS", "videos size: " + videos!!.size)
@@ -86,7 +97,7 @@ class RecordRegistryFragment : Fragment() {
 
         GlobalScope.launch(Dispatchers.Main) {
             Log.i("AAA", "Before updating data")
-            videos = db.videoDAO().getAllVideosFromUser((activity as HomeActivity).getUser().cod!!)
+            videos = db.videoDAO().getAllVideosFromUser(user.cod!!)
             Log.i("AAA", "Size is: " + videos?.size)
             setUpRecyclerView()
         }
