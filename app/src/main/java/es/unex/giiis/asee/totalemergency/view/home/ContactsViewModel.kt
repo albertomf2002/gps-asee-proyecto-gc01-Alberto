@@ -1,27 +1,51 @@
 package es.unex.giiis.asee.totalemergency.view.home
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import es.unex.giiis.asee.totalemergency.TotalEmergencyApplication
 import es.unex.giiis.asee.totalemergency.data.Repository
+import es.unex.giiis.asee.totalmergency.data.model.Contact
 import es.unex.giiis.asee.totalmergency.data.model.User
+import kotlinx.coroutines.launch
 
-class ProfileViewModel(
+class ContactsViewModel(
     private val repository: Repository
-) : ViewModel() {
+) : ViewModel()  {
 
-    var user: User? = null
+    var user : User? = null
 
-    private val _userView = MutableLiveData<User>()
-    val userView : LiveData<User>
-        get() = _userView
 
-    fun updateUser(){
-        _userView.value = user
+    private val _contactos = MutableLiveData<List<Contact>?>()
+    val contactos: LiveData<List<Contact>?>
+        get() = _contactos
+
+
+
+    fun obtenerListado(){
+        viewModelScope.launch {
+            Log.i("ContactosViewModel", "Contacts being fetched of user: ${user?.cod}")
+            _contactos.value = repository.obtenerContactos(user?.cod!!)
+            Log.i("ContactosViewModel", "Contact fetched: ${_contactos.value?.size}")
+        }
     }
+
+    fun guardarContacto(contact: Contact){
+        viewModelScope.launch {
+            repository.guardarContacto(contact)
+        }
+    }
+
+    fun borrarContact(cod : Long){
+        viewModelScope.launch {
+            repository.deleteContactFromCod(cod)
+        }
+    }
+
 
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
@@ -32,7 +56,7 @@ class ProfileViewModel(
             ): T {
                 val application =
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-                return ProfileViewModel(
+                return ContactsViewModel(
                     (application as TotalEmergencyApplication).appContainer.repository
                 ) as T
             }

@@ -8,10 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
+import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
+import es.unex.giiis.asee.totalemergency.view.home.ProfileViewModel
 import es.unex.giiis.asee.totalmergency.R
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
 import es.unex.giiis.asee.totalmergency.data.model.User
@@ -31,6 +35,8 @@ private const val TAG = "ProfileFragment"
  */
 class ProfileFragment : Fragment() {
 
+    private val homeViewModel: HomeViewModel by activityViewModels()
+    private val viewModel : ProfileViewModel by viewModels { ProfileViewModel.Factory }
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
@@ -38,7 +44,6 @@ class ProfileFragment : Fragment() {
 
     private lateinit var db : TotalEmergencyDatabase
 
-    private var user:User = User()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -52,8 +57,11 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val parentActivity = (activity as HomeActivity)
-        user = parentActivity.getUser()
+        homeViewModel.user.observe(viewLifecycleOwner) { us ->
+            viewModel.user = us
+            viewModel.updateUser()
+            Log.i("Prueba", "User: ${viewModel.user}")
+        }
 
         db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
 
@@ -65,18 +73,26 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        if(viewModel.user  == null){
+            Log.i("Prueba", "PRE CRASH nulo")
+        }else{
+            Log.i("Prueba", "PRE CRASH ${viewModel.user}")
+        }
         with(binding){
-            UsernameTextShow.text = "${user.userName}"
-            NameTextShow.text = "${user.name}"
-            LastnameTextShow.text = "${user.lastName}"
-            EmailTextShow.text = "${user.email}"
 
-            modificarCuenta.setOnClickListener {
-                val controlaor = (activity as HomeActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-                controlaor.navController.navigate(R.id.profileUpdaterFragment)
+            viewModel.userView.observe(viewLifecycleOwner){ it ->
+                UsernameTextShow.text = "${viewModel.user?.userName}"
+                NameTextShow.text = "${viewModel.user?.name}"
+                LastnameTextShow.text = "${viewModel.user?.lastName}"
+                EmailTextShow.text = "${viewModel.user?.email}"
+
+                modificarCuenta.setOnClickListener {
+                    val controlaor = (activity as HomeActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+                    controlaor.navController.navigate(R.id.profileUpdaterFragment)
+
+                    //homeViewModel.navitageToProfileUpdater()
+                }
             }
-
         }
     }
 
