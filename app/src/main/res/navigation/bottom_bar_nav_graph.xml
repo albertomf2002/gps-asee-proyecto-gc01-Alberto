@@ -55,12 +55,12 @@
     <fragment
         android:id="@+id/profileUpdaterFragment"
         android:name="es.unex.giiis.asee.totalmergency.view.home.ProfileUpdaterFragment"
-        android:label="fragment_profile_updater"
+        android:label="Cambiar perfil"
         tools:layout="@layout/fragment_profile_updater" />
     <fragment
         android:id="@+id/settingsFragment"
         android:name="es.unex.giiis.asee.totalmergency.view.home.SettingsFragment"
-        android:label="SettingsFragment" />
+        android:label="Ajustes" />
     <action
         android:id="@+id/home_to_settings"
         app:destination="@id/settingsFragment" />

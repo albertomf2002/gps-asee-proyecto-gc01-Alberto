@@ -54,15 +54,27 @@ class Repository (
         videoRecordDao.insert(vr)
     }
 
-
+    suspend fun deleteVideo(vr : Long){
+        videoRecordDao.deleteFromId(vr)
+    }
 
     suspend fun getUserFromCod(cod: Long) : User{
         return userDao.findByCod(cod)
+    }
+    suspend fun modifyUser(user: User){
+        userDao.modifyUser(user)
+    }
+
+    suspend fun deleteUser(user: User){
+        userDao.deleteByCod(user.cod!!)
+        contactDao.deleteFromUserId(user.cod!!)
+        videoRecordDao.deleteFromUserId(user.cod!!)
     }
 
     suspend fun deleteContactFromCod(cod : Long){
         contactDao.deleteFromId(cod)
     }
+
     suspend fun tryUpdateRecentLocationCache() {
         if (shouldUpdateLocationCache()) fetchRecentUbications()
     }

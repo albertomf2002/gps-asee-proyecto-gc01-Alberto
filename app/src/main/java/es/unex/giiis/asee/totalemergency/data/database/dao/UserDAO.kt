@@ -3,6 +3,7 @@ package es.unex.giiis.asee.totalemergency.data.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import es.unex.giiis.asee.totalmergency.data.model.User
 
 
@@ -20,6 +21,9 @@ interface UserDAO {
 
     @Query("DELETE FROM User WHERE cod = :first")
     suspend fun deleteByCod(first: Long)
+
+    @Update
+    suspend fun modifyUser(user : User)
 
     @Insert
     suspend fun insert(user: User): Long
