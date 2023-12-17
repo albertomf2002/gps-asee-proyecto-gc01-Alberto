@@ -2,14 +2,17 @@ package es.unex.giiis.asee.totalmergency.view.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Email
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
+import es.unex.giiis.asee.totalemergency.view.home.ProfileUpdaterViewModel
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
 import es.unex.giiis.asee.totalmergency.data.model.User
 import es.unex.giiis.asee.totalmergency.databinding.FragmentProfileUpdaterBinding
@@ -31,7 +34,7 @@ class ProfileUpdaterFragment : Fragment() {
 
     private val homeViewModel: HomeViewModel by activityViewModels()
 
-    private lateinit var user: User
+    private val viewModel : ProfileUpdaterViewModel by viewModels { ProfileUpdaterViewModel.Factory }
 
     private var _binding : FragmentProfileUpdaterBinding? = null
     private val binding get() = _binding!!
@@ -55,7 +58,8 @@ class ProfileUpdaterFragment : Fragment() {
         _binding = FragmentProfileUpdaterBinding.inflate(inflater, container, false)
 
         homeViewModel.user.observe(viewLifecycleOwner) { us ->
-            user = us
+            viewModel.user = us
+            viewModel.updateUser()
         }
 
         db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
@@ -65,9 +69,18 @@ class ProfileUpdaterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         with(binding){
             popup.visibility = View.GONE
+
+            viewModel.userView.observe(viewLifecycleOwner){ it ->
+                UsernameTextShow.text = viewModel.user?.userName
+                NameTextShow.text = viewModel.user?.name
+                LastnameTextShow.text = viewModel.user?.lastName
+                EmailTextShow.text = viewModel.user?.email
+            }
         }
+
         setUpListener()
     }
 
@@ -81,23 +94,40 @@ class ProfileUpdaterFragment : Fragment() {
                 popup.visibility = if(popping) View.VISIBLE else View.GONE
                 Log.i("PRE-ELIMINAR", "El valor es: ${popping}")
             }
-            buttonDelete.setOnClickListener {
 
-                //TODO: Borrado en cascada
-
-            }
             modificar.setOnClickListener {
+
+                val tempUser = User(cod=viewModel.user?.cod,userName=editUsername.text.toString(),
+                    name=editName.text.toString(), lastName=editLastname.text.toString(),
+                    email=editEmail.text.toString(),userPassword=viewModel.user?.userPassword!!,
+                    addres=viewModel.user?.addres!!,city=viewModel.user?.city!!,
+                    country=viewModel.user?.country!!,telephone=viewModel.user?.telephone!!)
+
                 editUsername.text.clear()
                 editName.text.clear()
                 editLastname.text.clear()
                 editEmail.text.clear()
+123
+                viewModel.modifyUser(tempUser, requireContext())
+                viewModel.userView.observe(viewLifecycleOwner){ it->
+                    homeViewModel.obtenerUser(tempUser.cod!!)
+                }
+
+                viewModel.userView.observe(viewLifecycleOwner){ it ->
+                    UsernameTextShow.text = viewModel.user?.userName
+                    NameTextShow.text = viewModel.user?.name
+                    LastnameTextShow.text = viewModel.user?.lastName
+                    EmailTextShow.text = viewModel.user?.email
+                }
             }
 
 
             buttonDelete.setOnClickListener {
                 Log.i("ELIMINAR", "Borrando usuario y su informacion")
+
+                viewModel.deleteUser(requireContext())
                 lifecycleScope.launch{
-                    val cod = user.cod!!
+                    val cod = viewModel.user?.cod!!
                     db.userDao().deleteByCod(cod)
 
                     db.videoDAO().deleteFromUserId(cod) //TODO: Clear videos from memory

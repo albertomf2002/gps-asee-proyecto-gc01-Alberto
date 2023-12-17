@@ -33,17 +33,10 @@ import java.lang.RuntimeException
 
 class ContactsFragment : Fragment(){
 
-    private lateinit var listener: OnShowClickListener
 
     private val viewModel : ContactsViewModel by viewModels { ContactsViewModel.Factory }
 
     private val homeViewModel: HomeViewModel by activityViewModels()
-    interface OnShowClickListener{
-        fun onShowClickCall(contact: Contact)
-        fun onDeleteClickCall(contact: Contact, viewModel: ContactsViewModel)
-        fun onClickDelete(contact: Contact)
-    }
-
 
     private var _binding: FragmentContactsBinding? = null
     private val binding get() = _binding!!
@@ -58,18 +51,6 @@ class ContactsFragment : Fragment(){
         arguments?.let {
 
         }
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        if(context is OnShowClickListener){
-            Log.i("CONTEXT", "COUNTER OnShowClickListener")
-            listener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnShowClickListener")
-        }
-
     }
 
     override fun onCreateView(
@@ -124,16 +105,17 @@ class ContactsFragment : Fragment(){
 
             adapter = ContactsAdapter(contacts = contacts!!,
                 onClick = {
-                    listener.onShowClickCall(it)
+                    homeViewModel.onClickContact(it, requireActivity())
                     Toast.makeText(context, "click on:" + it.contactName, Toast.LENGTH_SHORT).show()
                 },
                 onLongClick = {
-                    listener.onDeleteClickCall(it, viewModel)
+                    homeViewModel.onDeleteClickCall(it, requireContext())
+                    viewModel.obtenerListado()
                     adapter.notifyDataSetChanged()
                     Toast.makeText(context, "long click on:" + it.contactName, Toast.LENGTH_SHORT).show()
                 },
                 onClickDelete = {
-                    listener.onClickDelete(it)
+                    homeViewModel.onClickDelete(it)
                     Toast.makeText(context, "Presiona más tiempo para borrar", Toast.LENGTH_SHORT).show()
                 })
 

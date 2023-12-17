@@ -42,7 +42,7 @@ class EmergencyViewModel (
         viewModelScope.launch {
             // Get the variables
             val videoUri = uri
-            val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+            val timeStamp = repository.systemDate()
             val videoFileName = "VIDEO_${timeStamp}.mp4"
 
             val codInserted = repository.FP_CrearVideo(videoUri, videoFileName, user?.cod!!, timeStamp, context)

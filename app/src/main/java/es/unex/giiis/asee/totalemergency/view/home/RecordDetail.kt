@@ -52,9 +52,6 @@ class RecordDetail : Fragment() {
 
     private val args: RecordDetailArgs by navArgs()
 
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,9 +88,8 @@ class RecordDetail : Fragment() {
             val db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
 
             if(viewModel.path == null){
-                lifecycleScope.launch {
-                    db.videoDAO().deleteFromId(video?.videoId!!)
-                }
+                viewModel.deleteVideo(video)
+
             }else {
                 videoView.setVideoPath(viewModel.path)
                 videoView.start()
@@ -103,29 +99,8 @@ class RecordDetail : Fragment() {
                 videoView.stopPlayback()
 
                 Log.d("INTENT", "REQUEST OPEN DOCUMENT")
-                val fdelete = File(viewModel.path!!)
-                try {
-                    //fdelete.delete()
-                    //FileUtils.forceDelete(fdelete)
-                    Log.i("DELETE", "Video has been successfully deleted")
-                    lifecycleScope.launch {
-                       // db.videoDAO().deleteFromId(video?.videoId!!)
-                    }
-                } catch (e: Exception){
-                    Log.e("DELETE", "ERROR: Video cant be deleted, reason: ${e.message}")
-                }
 
-                if(fdelete.delete()){
-                    Log.i("DELETE", "It was succesfully deleted")
-                    lifecycleScope.launch {
-                        db.videoDAO().deleteFromId(video?.videoId!!)
-                    }
-                }else{
-                    Log.i("DELETE", "It was NOT succesfully deleted")
-                }
-
-
-
+                viewModel.deleteFile(fdelete, video)
             }
         }
     }

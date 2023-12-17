@@ -23,9 +23,9 @@ class HomeMenuViewModel (
     val localizaciones = repository.localizaciones
 
     private val _toast = MutableLiveData<String?>()
-
     val toast: LiveData<String?>
         get() = _toast
+
 
     private fun refresh(){
         launchDataLoad { repository.tryUpdateRecentLocationCache()}

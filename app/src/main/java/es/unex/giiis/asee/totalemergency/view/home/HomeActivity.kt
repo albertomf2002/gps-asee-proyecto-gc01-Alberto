@@ -27,7 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 
-class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickListener, ContactsFragment.OnShowClickListener
+class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickListener
 {
 
     //Factory necesaria para recuperar usuario
@@ -80,8 +80,7 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
         Log.i("User data", "User is retrieved from database")
 
         setUpUI()
-        setUpListeners()
-
+        //setUpListeners()
     }
 
     fun setUpUI() {
@@ -120,10 +119,6 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
                 || super.onSupportNavigateUp()
     }
 
-    fun setUpListeners() {
-        //nothing to do
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar_home, menu)
 
@@ -159,34 +154,4 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
         navController.navigate(action)
     }
 
-    override fun onShowClickCall(contact: Contact){
-        Log.i("CALL", "Starting a call with another phone")
-        val callIntent = Intent(Intent.ACTION_CALL)
-        callIntent.data = Uri.parse("tel:" + contact.telephone)
-        startActivity(callIntent)
-    }
-
-    override fun onDeleteClickCall(contact: Contact, viewModel: ContactsViewModel) {
-        if (contact.contactId != null) {
-            viewModel.borrarContact(contact.contactId!!)
-            viewModel.obtenerListado()
-        }
-    }
-
-    override fun onClickDelete(contact: Contact) {
-        //Nothing, yet
-    }
-
-    /*
-    override fun onShowClick(show: Show) {
-        val action = DiscoverFragmentDirections.actionDiscoverFragmentToShowDetailFragment(show)
-        navController.navigate(action)
-    }
-    override fun onShowClick(show: Show) {
-        val action = null
-        println("a")
-        //val action = DiscoverFragmentDirections.actionDiscoverFragmentToShowDetailFragment(show)
-        //navController.navigate(action)
-    }
-    */
 }
