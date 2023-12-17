@@ -27,7 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 
-class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickListener
+class HomeActivity : AppCompatActivity()
 {
 
     //Factory necesaria para recuperar usuario
@@ -74,7 +74,7 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
 
         //viewModel.userCodInSession = userCod
         viewModel.obtenerUser(userCod)
-
+        viewModel.guardarNavController(navController)
 
 
         Log.i("User data", "User is retrieved from database")
@@ -84,7 +84,7 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
     }
 
     fun setUpUI() {
-        binding.bottomNavigation.setupWithNavController(navController)
+        binding.bottomNavigation.setupWithNavController(viewModel.navController!!)
             appBarConfiguration = AppBarConfiguration(
                 setOf(
                     R.id.recordRegistryFragment,
@@ -95,10 +95,10 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
                 )
             )
         setSupportActionBar(binding.toolbar)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        setupActionBarWithNavController(viewModel.navController!!, appBarConfiguration)
 
         // Hide toolbar and bottom navigation when in detail fragment
-        navController.addOnDestinationChangedListener { _, destination, _ ->
+        viewModel.navController!!.addOnDestinationChangedListener { _, destination, _ ->
             if ((destination.id == R.id.recordDetail) ||
                 (destination.id == R.id.settingsFragment)){
              //   binding.toolbar.visibility = View.GONE
@@ -115,7 +115,7 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp(appBarConfiguration)
+        return viewModel.navController!!.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
     }
 
@@ -138,7 +138,7 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
             //val action = DiscoverFragmentDirections.actionHomeToSettingsFragment()
             val action = HomeMenuFragmentDirections.homeToSettings()
 
-            navController.navigate(action)
+            viewModel.navController?.navigate(action)
             true
         }
 
@@ -149,9 +149,5 @@ class HomeActivity : AppCompatActivity(), RecordRegistryFragment.OnShowClickList
         }
     }
 
-    override fun onShowClick(video: VideoRecord){
-        val action = RecordRegistryFragmentDirections.actionShowRecordDetail2(video)
-        navController.navigate(action)
-    }
 
 }

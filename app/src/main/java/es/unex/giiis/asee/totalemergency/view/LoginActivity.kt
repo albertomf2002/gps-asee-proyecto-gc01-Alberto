@@ -8,8 +8,11 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
+import es.unex.giiis.asee.totalemergency.view.LoginViewModel
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
 
 import es.unex.giiis.asee.totalmergency.databinding.ActivityLoginBinding
@@ -21,7 +24,10 @@ import kotlinx.coroutines.launch
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var db: TotalEmergencyDatabase
+
+
+    private val viewModel : LoginViewModel by viewModels { LoginViewModel.Factory }
+
     private var guardar: Boolean = false
 
     private val responseLauncher =
@@ -51,10 +57,6 @@ class LoginActivity : AppCompatActivity() {
         //view binding and set content view
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
-        //database initialization
-        db = TotalEmergencyDatabase.getInstance(applicationContext)!!
 
         //views initialization and listeners
         setUpUI()
@@ -111,7 +113,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
             rememberMe.setOnClickListener{
-                //guardar = rememberMe.isChecked
+
             }
 
 
@@ -121,30 +123,28 @@ class LoginActivity : AppCompatActivity() {
     private fun checkLogin() {
         val check = CredentialCheck.login(binding.etUsername.text.toString(), binding.etPassword.text.toString())
         if (!check.fail) {
-            lifecycleScope.launch {
-                val codUser = db?.userDao()?.findByLogin(binding.etUsername.text.toString(), binding.etPassword.text.toString())
+            val name = binding.etUsername.text.toString()
+            val password = binding.etPassword.text.toString()
+            viewModel.retrieveUserCod(name, password)
 
-                if (codUser != null) {
-                    if(check.fail) {
+            viewModel.userCod.observe(this, Observer { it ->
+
+                if(it != null && it != -1L){
+                    if(check.fail){
                         notifyInvalidCredentials(check.msg)
-                    }else {
-                        Log.i("User data", "User cod is retrieved: " + codUser)
+                    }else{
+                        Log.i("User data", "User cod is retrieved: " + it)
                         //REMEMBER ME
                         setSettings(binding.root.context)
 
-                        navigateToHomeActivity(codUser, check.msg)
+                        navigateToHomeActivity(it, check.msg)
                     }
-                }
-                else
+                }else
                     notifyInvalidCredentials("Invalid username")
-            }
+            })
         }
         else
             notifyInvalidCredentials(check.msg)
-    }
-
-    private fun guardarAutologin(remember: Boolean){
-
     }
 
     private fun navigateToHomeActivity(codUser: Long, msg: String) {

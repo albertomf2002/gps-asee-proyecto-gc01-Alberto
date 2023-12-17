@@ -1,12 +1,8 @@
 package es.unex.giiis.asee.totalemergency.view.home
 
-import android.Manifest
 import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager
 import android.util.Log
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,46 +11,31 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import es.unex.giiis.asee.totalemergency.TotalEmergencyApplication
 import es.unex.giiis.asee.totalemergency.data.Repository
-import es.unex.giiis.asee.totalmergency.data.model.Contact
 import es.unex.giiis.asee.totalmergency.data.model.User
+import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
+import es.unex.giiis.asee.totalmergency.view.home.HomeActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class ContactsViewModel(
-    private val repository: Repository
-) : ViewModel()  {
+class RecordRegistryViewModel(
+    private val repository: Repository,
+) : ViewModel() {
 
     var user : User? = null
 
+    private val _videos = MutableLiveData<List<VideoRecord>>()
+    val videos : LiveData<List<VideoRecord>>
+        get() = _videos
 
-    private val _contactos = MutableLiveData<List<Contact>?>()
-    val contactos: LiveData<List<Contact>?>
-        get() = _contactos
-
-
-
-    fun obtenerListado(){
-        viewModelScope.launch {
-            Log.i("ContactosViewModel", "Contacts being fetched of user: ${user?.cod}")
-            _contactos.value = repository.obtenerContactos(user?.cod!!)
-            Log.i("ContactosViewModel", "Contact fetched: ${_contactos.value?.size}")
-        }
+    fun obtainStoragePermission(context: Context, activity: Activity) {
+        repository.askStoragePermission(context, activity)
     }
 
-    fun guardarContacto(contact: Contact){
-        viewModelScope.launch {
-            repository.guardarContacto(contact)
+    fun obtainVideos() {
+        viewModelScope.launch() {
+            _videos.value = repository.getAllVideos(user?.cod!!)
         }
-    }
-
-    fun borrarContact(cod : Long){
-        viewModelScope.launch {
-            repository.deleteContactFromCod(cod)
-        }
-    }
-
-    fun requirePermisson(context: Context, activity: Activity) {
-        // Check if the app has phone call permission
-        repository.askPhonePermission(context, activity)
     }
 
 
@@ -67,7 +48,7 @@ class ContactsViewModel(
             ): T {
                 val application =
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-                return ContactsViewModel(
+                return RecordRegistryViewModel(
                     (application as TotalEmergencyApplication).appContainer.repository
                 ) as T
             }

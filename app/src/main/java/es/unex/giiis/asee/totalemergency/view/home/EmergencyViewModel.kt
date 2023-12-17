@@ -73,6 +73,11 @@ class EmergencyViewModel (
             repository.insertVideo(vr)
         }
     }
+
+    fun obtainStoragePermission(context: Context, activity: HomeActivity) {
+        repository.askStoragePermission(context, activity)
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")

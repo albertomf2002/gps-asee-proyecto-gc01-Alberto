@@ -50,9 +50,10 @@ class EmergencyFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
 
     private var _binding: FragmentEmergencyBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var videoUri : Uri
-    private val binding get() = _binding!!
+
 
     private val viewModel : EmergencyViewModel by viewModels { EmergencyViewModel.Factory }
 
@@ -72,6 +73,7 @@ class EmergencyFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.obtainPermission(requireContext(), activity as HomeActivity)
+        viewModel.obtainStoragePermission(requireContext(), activity as HomeActivity)
     }
 
     override fun onCreateView(

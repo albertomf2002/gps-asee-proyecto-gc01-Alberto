@@ -1,5 +1,7 @@
 package es.unex.giiis.asee.totalemergency.view.home
 
+import android.app.Activity
+import android.content.Context
 import android.text.Editable.Factory
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -33,6 +35,10 @@ class HomeMenuViewModel (
 
     init {
         refresh()
+    }
+
+    fun askLocationPermission(context: Context, activity: Activity){
+        repository.askLocationPermission(context, activity)
     }
 
 

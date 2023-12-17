@@ -1,6 +1,8 @@
 package es.unex.giiis.asee.totalmergency.view.home
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,6 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -64,6 +68,7 @@ class ContactsFragment : Fragment(){
             viewModel.user = us
             viewModel.obtenerListado()
         }
+        viewModel.requirePermisson(requireContext(), requireActivity())
 
         // Inflate the layout for this fragment
         return binding.root
@@ -78,6 +83,10 @@ class ContactsFragment : Fragment(){
         }
 
         with(binding){
+            insertarTelefono.text = null
+            nombreContacto.text = null
+            nombreContacto.hint = "Nombre"
+            insertarTelefono.hint = "Número telefónico"
             botonInsertar.setOnClickListener {
 
                 val contacto = Contact(null, insertarTelefono.text.toString().toLong(), nombreContacto.text.toString(), userId = viewModel.user?.cod!!)
@@ -95,6 +104,8 @@ class ContactsFragment : Fragment(){
 
                 insertarTelefono.text = null
                 nombreContacto.text = null
+                nombreContacto.hint = "Nombre"
+                insertarTelefono.hint = "Número telefónico"
             }
         }
     }
