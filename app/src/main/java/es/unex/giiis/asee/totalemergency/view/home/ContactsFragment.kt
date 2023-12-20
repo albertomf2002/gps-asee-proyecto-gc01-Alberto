@@ -15,7 +15,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import es.unex.giiis.asee.totalemergency.view.home.ContactsViewModel
 import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
