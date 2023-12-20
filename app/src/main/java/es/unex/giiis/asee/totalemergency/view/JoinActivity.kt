@@ -5,8 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import es.unex.giiis.asee.totalemergency.view.JoinViewModel
 import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
 
 import es.unex.giiis.asee.totalmergency.databinding.ActivityJoinBinding
@@ -19,9 +24,9 @@ import kotlinx.coroutines.launch
 
 class JoinActivity : AppCompatActivity() {
 
-    private lateinit var db: TotalEmergencyDatabase
     private lateinit var binding: ActivityJoinBinding
 
+    private val viewModel : JoinViewModel by viewModels { JoinViewModel.Factory }
     companion object {
 
         const val COD = "JOIN_COD"
@@ -41,8 +46,6 @@ class JoinActivity : AppCompatActivity() {
         binding = ActivityJoinBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        db = TotalEmergencyDatabase.getInstance(applicationContext)!!
-
         //views initialization and listeners
         setUpUI()
         setUpListeners()
@@ -61,6 +64,7 @@ class JoinActivity : AppCompatActivity() {
     }
 
     private fun join() {
+        val a = this
         with(binding) {
             val check = CredentialCheck.join(
                 etUsername.text.toString(),
@@ -68,24 +72,29 @@ class JoinActivity : AppCompatActivity() {
                 etRepassword.text.toString()
             )
             if (check.fail) notifyInvalidCredentials(check.msg) else {
-                lifecycleScope.launch {
-                    val user = User(null, etUsername.text.toString(),
-                        userPassword = etPassword.text.toString(), name = etRealname.text.toString(),
-                        lastName = etLastname.text.toString(), email = etEmail.text.toString(),
-                        addres = etAddress.text.toString(), city = etCity.text.toString(),
-                        country = etCountry.text.toString(), telephone = etPhone.text.toString()
-                    )
-                    val cod = db?.userDao()?.insert(user)
-                    navigateBackWithResult (
-                        cod = cod!!,
+
+                val user = User(
+                    null, etUsername.text.toString(),
+                    userPassword = etPassword.text.toString(), name = etRealname.text.toString(),
+                    lastName = etLastname.text.toString(), email = etEmail.text.toString(),
+                    addres = etAddress.text.toString(), city = etCity.text.toString(),
+                    country = etCountry.text.toString(), telephone = etPhone.text.toString()
+                )
+
+                viewModel.almacenarUsuario(user)
+
+                viewModel.userCod.observe(root.context as LifecycleOwner, Observer { it ->
+                    //your code here
+                    navigateBackWithResult(
+                        cod = it,
                         username = etUsername.text.toString(),
                         pass = etPassword.text.toString()
                     )
-                }
+                })
+
             }
         }
     }
-
 
     private fun navigateBackWithResult(cod: Long, username: String, pass: String) {
         val intent = Intent().apply {

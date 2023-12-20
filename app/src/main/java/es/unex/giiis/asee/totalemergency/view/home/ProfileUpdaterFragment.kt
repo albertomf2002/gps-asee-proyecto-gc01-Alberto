@@ -78,6 +78,11 @@ class ProfileUpdaterFragment : Fragment() {
                 NameTextShow.text = viewModel.user?.name
                 LastnameTextShow.text = viewModel.user?.lastName
                 EmailTextShow.text = viewModel.user?.email
+
+                editUsername.setText(viewModel.user?.userName)
+                editName.setText (viewModel.user?.name)
+                editLastname.setText (viewModel.user?.lastName)
+                editEmail.setText (viewModel.user?.email)
             }
         }
 

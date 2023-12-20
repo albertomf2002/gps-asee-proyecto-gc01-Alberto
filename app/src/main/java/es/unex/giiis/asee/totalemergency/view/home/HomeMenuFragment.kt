@@ -74,6 +74,8 @@ class HomeMenuFragment : Fragment() {
         _binding = FragmentHomeMenuBinding.inflate(inflater, container, false)
         listadoCentrosSalud = listOf<Localizaciones>()
 
+        viewModel.askLocationPermission(requireContext(), requireActivity())
+
         return binding.root
     }
 
