@@ -1,4 +1,4 @@
-package es.unex.giiis.asee.totalmergency.view
+package es.unex.giiis.asee.totalemergency.view
 
 import android.content.Context
 import android.content.Intent
@@ -12,11 +12,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import es.unex.giiis.asee.totalemergency.view.JoinViewModel
-import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
+import es.unex.giiis.asee.totalemergency.data.database.TotalEmergencyDatabase
 
-import es.unex.giiis.asee.totalmergency.databinding.ActivityJoinBinding
-import es.unex.giiis.asee.totalmergency.data.model.User
-import es.unex.giiis.asee.totalmergency.util.CredentialCheck
+import es.unex.giiis.asee.totalemergency.databinding.ActivityJoinBinding
+import es.unex.giiis.asee.totalemergency.data.model.User
+import es.unex.giiis.asee.totalemergency.util.CredentialCheck
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

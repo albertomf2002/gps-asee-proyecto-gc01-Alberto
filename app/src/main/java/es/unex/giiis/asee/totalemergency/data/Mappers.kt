@@ -1,7 +1,7 @@
-package es.unex.giiis.asee.totalmergency.data
+package es.unex.giiis.asee.totalemergency.data
 
 import es.unex.giiis.asee.totalemergency.data.model.Localizaciones
-import es.unex.giiis.asee.totalmergency.data.api.CentrosSalud
+import es.unex.giiis.asee.totalemergency.data.api.CentrosSalud
 
 
 fun CentrosSalud.toLoc() = Localizaciones(

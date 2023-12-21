@@ -14,12 +14,12 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.NavController
 import es.unex.giiis.asee.totalemergency.TotalEmergencyApplication
 import es.unex.giiis.asee.totalemergency.data.Repository
-import es.unex.giiis.asee.totalmergency.R
-import es.unex.giiis.asee.totalmergency.data.model.Contact
-import es.unex.giiis.asee.totalmergency.data.model.User
-import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
-import es.unex.giiis.asee.totalmergency.view.home.EmergencyFragmentDirections
-import es.unex.giiis.asee.totalmergency.view.home.RecordRegistryFragmentDirections
+import es.unex.giiis.asee.totalemergency.R
+import es.unex.giiis.asee.totalemergency.data.model.Contact
+import es.unex.giiis.asee.totalemergency.data.model.User
+import es.unex.giiis.asee.totalemergency.data.model.VideoRecord
+import es.unex.giiis.asee.totalemergency.view.home.EmergencyFragmentDirections
+import es.unex.giiis.asee.totalemergency.view.home.RecordRegistryFragmentDirections
 import kotlinx.coroutines.launch
 
 

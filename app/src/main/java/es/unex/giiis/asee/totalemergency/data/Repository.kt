@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.icu.text.SimpleDateFormat
+import android.net.Network
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
@@ -16,27 +17,31 @@ import es.unex.giiis.asee.totalemergency.data.database.dao.ContactDAO
 import es.unex.giiis.asee.totalemergency.data.database.dao.LocalizacionesDAO
 import es.unex.giiis.asee.totalemergency.data.database.dao.UserDAO
 import es.unex.giiis.asee.totalemergency.data.database.dao.VideoRecordDAO
-import es.unex.giiis.asee.totalmergency.api.APIError
-import es.unex.giiis.asee.totalmergency.api.UbicationAPI
-import es.unex.giiis.asee.totalmergency.data.model.Contact
-import es.unex.giiis.asee.totalmergency.data.model.User
-import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
-import es.unex.giiis.asee.totalmergency.data.toLoc
-import es.unex.giiis.asee.totalmergency.view.home.HomeActivity
+import es.unex.giiis.asee.totalemergency.api.APIError
+import es.unex.giiis.asee.totalemergency.api.NetworkService
+import es.unex.giiis.asee.totalemergency.api.UbicationAPI
+import es.unex.giiis.asee.totalemergency.data.model.Contact
+import es.unex.giiis.asee.totalemergency.data.model.User
+import es.unex.giiis.asee.totalemergency.data.model.VideoRecord
+import es.unex.giiis.asee.totalemergency.data.toLoc
+import es.unex.giiis.asee.totalemergency.view.home.HomeActivity
 import java.io.File
 import java.util.Date
 import java.util.Locale
 
 
-class Repository (
+open class Repository (
     private val localizacionesDao: LocalizacionesDAO,
     private val userDao: UserDAO,
     private val contactDao: ContactDAO,
     private val videoRecordDao: VideoRecordDAO,
-    private val networkService: UbicationAPI
+    private var networkService: NetworkService
 ) {
     private var lastUpdateTimeMillis: Long = 0L
 
+    fun updateNetworkService(_net : NetworkService){
+        networkService = _net
+    }
     fun systemDate() : String{
         return SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
     }
@@ -150,13 +155,13 @@ class Repository (
     }
 
     private suspend fun fetchRecentUbications() {
-        Log.d("Repository", "Fetching data from ubications")
+        //Log.d("Repository", "Fetching data from ubications")
         try {
-            Log.d("Repository", "PRE DANGER")
-            val localizaciones = networkService.getAllUbications().map { it.toLoc() }
-            Log.d("Repository", "Data has been read: ${localizaciones.size}")
+            //Log.d("Repository", "PRE DANGER")
+            val localizaciones = networkService.getNetworkService().getAllUbications().map { it.toLoc() }
+            //Log.d("Repository", "Data has been read: ${localizaciones.size}")
             localizacionesDao.insertAll(localizaciones)
-            Log.d("Repository", "Data stored")
+            //Log.d("Repository", "Data stored")
             lastUpdateTimeMillis = System.currentTimeMillis()
         } catch (cause: Throwable) {
             throw APIError("Unable to fetch data from API", cause)

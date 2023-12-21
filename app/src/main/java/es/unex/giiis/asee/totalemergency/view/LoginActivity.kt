@@ -1,4 +1,4 @@
-package es.unex.giiis.asee.totalmergency.view
+package es.unex.giiis.asee.totalemergency.view
 
 import android.content.Context
 import android.content.Intent
@@ -13,12 +13,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import es.unex.giiis.asee.totalemergency.view.LoginViewModel
-import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
+import es.unex.giiis.asee.totalemergency.data.database.TotalEmergencyDatabase
 
-import es.unex.giiis.asee.totalmergency.databinding.ActivityLoginBinding
-import es.unex.giiis.asee.totalmergency.data.model.User
-import es.unex.giiis.asee.totalmergency.util.CredentialCheck
-import es.unex.giiis.asee.totalmergency.view.home.HomeActivity
+import es.unex.giiis.asee.totalemergency.databinding.ActivityLoginBinding
+import es.unex.giiis.asee.totalemergency.data.model.User
+import es.unex.giiis.asee.totalemergency.util.CredentialCheck
+import es.unex.giiis.asee.totalemergency.view.home.HomeActivity
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {

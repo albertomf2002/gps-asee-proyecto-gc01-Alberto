@@ -1,6 +1,6 @@
-package es.unex.giiis.asee.totalmergency
+package es.unex.giiis.asee.totalemergency
 
-import es.unex.giiis.asee.totalmergency.util.CredentialCheck
+import es.unex.giiis.asee.totalemergency.util.CredentialCheck
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -10,7 +10,7 @@ import org.junit.Assert.*
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-class ExampleUnitTest {
+class DefaultClassesTest {
     @Test
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
@@ -18,6 +18,7 @@ class ExampleUnitTest {
 
     @Test
     fun username_and_password_validator(){
+        //Sirve para comparar la clase credential check, no es parte de las HU pero es importante.
 
         //Username and password >= 4 length
         assertEquals(CredentialCheck.login("Carlos", "1234").fail, false)
@@ -38,6 +39,5 @@ class ExampleUnitTest {
         assertEquals(CredentialCheck.login("Car", "123").fail, true)
         assertEquals(CredentialCheck.login("Car", "123").msg, CredentialCheck.CredentialMessage.INVALID_USERNAME.message)
         assertEquals(CredentialCheck.login("Car", "123").error, CredentialCheck.CredentialError.UsernameError)
-
     }
 }

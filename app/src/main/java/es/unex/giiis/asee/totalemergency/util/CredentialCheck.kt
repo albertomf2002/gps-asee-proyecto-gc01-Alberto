@@ -1,4 +1,4 @@
-package es.unex.giiis.asee.totalmergency.util
+package es.unex.giiis.asee.totalemergency.util
 
 class CredentialCheck private constructor() {
 

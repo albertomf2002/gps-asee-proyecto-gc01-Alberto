@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import es.unex.giiis.asee.totalemergency.TotalEmergencyApplication
 import es.unex.giiis.asee.totalemergency.data.Repository
-import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
+import es.unex.giiis.asee.totalemergency.data.model.VideoRecord
 import kotlinx.coroutines.launch
 import java.io.File
 

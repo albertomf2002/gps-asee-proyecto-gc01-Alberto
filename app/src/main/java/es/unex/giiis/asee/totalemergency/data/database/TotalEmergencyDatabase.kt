@@ -1,4 +1,4 @@
-package es.unex.giiis.asee.totalmergency.data.database
+package es.unex.giiis.asee.totalemergency.data.database
 
 import android.content.Context
 import androidx.room.Database
@@ -9,9 +9,9 @@ import es.unex.giiis.asee.totalemergency.data.database.dao.LocalizacionesDAO
 import es.unex.giiis.asee.totalemergency.data.database.dao.UserDAO
 import es.unex.giiis.asee.totalemergency.data.database.dao.VideoRecordDAO
 import es.unex.giiis.asee.totalemergency.data.model.Localizaciones
-import es.unex.giiis.asee.totalmergency.data.model.Contact
-import es.unex.giiis.asee.totalmergency.data.model.User
-import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
+import es.unex.giiis.asee.totalemergency.data.model.Contact
+import es.unex.giiis.asee.totalemergency.data.model.User
+import es.unex.giiis.asee.totalemergency.data.model.VideoRecord
 
 @Database(entities = [User::class, VideoRecord::class, Contact::class, Localizaciones::class], version = 1)
 abstract class TotalEmergencyDatabase : RoomDatabase() {

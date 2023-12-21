@@ -1,4 +1,4 @@
-package es.unex.giiis.asee.totalmergency.data.model
+package es.unex.giiis.asee.totalemergency.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

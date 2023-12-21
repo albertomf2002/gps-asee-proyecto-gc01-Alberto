@@ -1,32 +1,26 @@
-package es.unex.giiis.asee.totalmergency.view.home
+package es.unex.giiis.asee.totalemergency.view.home
 
-import android.app.Activity
+
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
+
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
-import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
-import es.unex.giiis.asee.totalemergency.view.home.ProfileViewModel
-import es.unex.giiis.asee.totalmergency.R
-import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
-import es.unex.giiis.asee.totalmergency.data.model.User
-import es.unex.giiis.asee.totalmergency.databinding.FragmentProfileBinding
-import kotlinx.coroutines.launch
+
+import es.unex.giiis.asee.totalemergency.R
+import es.unex.giiis.asee.totalemergency.data.database.TotalEmergencyDatabase
+import es.unex.giiis.asee.totalemergency.data.model.User
+import es.unex.giiis.asee.totalemergency.databinding.FragmentProfileBinding
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
-private const val TAG = "ProfileFragment"
+//private const val TAG = "ProfileFragment"
 
 /**
  * A simple [Fragment] subclass.
@@ -40,7 +34,7 @@ class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
-    private val args: ProfileFragmentArgs by navArgs()
+    //private val args: ProfileFragmentArgs by navArgs()
 
     private lateinit var db : TotalEmergencyDatabase
 

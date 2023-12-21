@@ -3,7 +3,7 @@ package es.unex.giiis.asee.totalemergency.data.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import es.unex.giiis.asee.totalmergency.data.model.Contact
+import es.unex.giiis.asee.totalemergency.data.model.Contact
 
 @Dao
 interface ContactDAO {

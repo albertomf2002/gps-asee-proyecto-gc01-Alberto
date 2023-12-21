@@ -1,8 +1,6 @@
-package es.unex.giiis.asee.totalmergency.view.home
+package es.unex.giiis.asee.totalemergency.view.home
 
-import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
+
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,22 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+
 import androidx.recyclerview.widget.LinearLayoutManager
-import es.unex.giiis.asee.totalemergency.view.home.ContactsViewModel
-import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
-import es.unex.giiis.asee.totalmergency.R
-import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
-import es.unex.giiis.asee.totalmergency.data.model.Contact
-import es.unex.giiis.asee.totalmergency.data.model.User
-import es.unex.giiis.asee.totalmergency.databinding.FragmentContactsBinding
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.lang.RuntimeException
+
+import es.unex.giiis.asee.totalemergency.data.model.Contact
+
+import es.unex.giiis.asee.totalemergency.databinding.FragmentContactsBinding
+
 
 
 /**

@@ -13,8 +13,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import es.unex.giiis.asee.totalemergency.TotalEmergencyApplication
 import es.unex.giiis.asee.totalemergency.data.Repository
-import es.unex.giiis.asee.totalmergency.api.APIError
-import es.unex.giiis.asee.totalmergency.data.model.User
+import es.unex.giiis.asee.totalemergency.api.APIError
+import es.unex.giiis.asee.totalemergency.data.model.User
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
