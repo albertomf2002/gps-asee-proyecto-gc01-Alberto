@@ -27,14 +27,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.whenever
 
 
 @RunWith(MockitoJUnitRunner::class)
-class HU1_Test {
+class HomeTests {
 
     private lateinit var viewModel : HomeMenuViewModel
-    private lateinit var homeViewModel : HomeViewModel
 
     @Mock
     private lateinit var repository: Repository
@@ -50,8 +48,6 @@ class HU1_Test {
         Dispatchers.setMain(Dispatchers.Unconfined)
 
         viewModel = HomeMenuViewModel(repository)
-        homeViewModel = HomeViewModel(repository)
-
 
     }
 
@@ -66,7 +62,6 @@ class HU1_Test {
     @Test
     fun viewModel_initialization(){
         assertNotNull(viewModel)
-        assertNotNull(homeViewModel)
     }
 
     @Test

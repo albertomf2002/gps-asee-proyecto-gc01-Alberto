@@ -24,12 +24,9 @@ class ContactsViewModel(
 
     var user : User? = null
 
-
     private val _contactos = MutableLiveData<List<Contact>?>()
     val contactos: LiveData<List<Contact>?>
         get() = _contactos
-
-
 
     fun obtenerListado(){
         viewModelScope.launch {
