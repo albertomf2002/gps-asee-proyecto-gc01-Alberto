@@ -1,4 +1,4 @@
-package es.unex.giiis.asee.totalmergency.view.home
+package es.unex.giiis.asee.totalemergency.view.home
 
 import android.content.Context
 import android.content.Intent
@@ -19,10 +19,10 @@ import androidx.navigation.ui.setupWithNavController
 import es.unex.giiis.asee.totalemergency.view.home.ContactsViewModel
 import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
 
-import es.unex.giiis.asee.totalmergency.R
-import es.unex.giiis.asee.totalmergency.data.model.Contact
-import es.unex.giiis.asee.totalmergency.databinding.ActivityHomeBinding
-import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
+import es.unex.giiis.asee.totalemergency.R
+import es.unex.giiis.asee.totalemergency.data.model.Contact
+import es.unex.giiis.asee.totalemergency.databinding.ActivityHomeBinding
+import es.unex.giiis.asee.totalemergency.data.model.VideoRecord
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

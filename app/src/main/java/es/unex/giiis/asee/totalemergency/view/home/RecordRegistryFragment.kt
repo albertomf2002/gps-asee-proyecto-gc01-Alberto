@@ -1,7 +1,6 @@
-package es.unex.giiis.asee.totalmergency.view.home
+package es.unex.giiis.asee.totalemergency.view.home
 
-import android.content.Context
-import android.opengl.Visibility
+
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,21 +11,8 @@ import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
-import es.unex.giiis.asee.totalemergency.view.home.RecordRegistryViewModel
-import es.unex.giiis.asee.totalmergency.R
-import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
-import es.unex.giiis.asee.totalmergency.data.model.User
-import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
-import es.unex.giiis.asee.totalmergency.databinding.FragmentRecordRegistryBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.lang.RuntimeException
+import es.unex.giiis.asee.totalemergency.databinding.FragmentRecordRegistryBinding
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

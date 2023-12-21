@@ -5,7 +5,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
+import es.unex.giiis.asee.totalemergency.data.model.VideoRecord
 
 @Dao
 interface VideoRecordDAO {

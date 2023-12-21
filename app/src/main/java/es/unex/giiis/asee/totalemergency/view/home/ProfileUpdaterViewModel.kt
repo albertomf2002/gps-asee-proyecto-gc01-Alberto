@@ -11,7 +11,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.preference.PreferenceManager
 import es.unex.giiis.asee.totalemergency.TotalEmergencyApplication
 import es.unex.giiis.asee.totalemergency.data.Repository
-import es.unex.giiis.asee.totalmergency.data.model.User
+import es.unex.giiis.asee.totalemergency.data.model.User
 import kotlinx.coroutines.launch
 
 class ProfileUpdaterViewModel (

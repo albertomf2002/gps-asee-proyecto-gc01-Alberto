@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "es.unex.giiis.asee.totalmergency"
+    namespace = "es.unex.giiis.asee.totalemergency"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "es.unex.giiis.asee.totalmergency"
+        applicationId = "es.unex.giiis.asee.totalemergency"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
@@ -49,7 +49,8 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11")
+    //implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
     implementation("com.github.bumptech.glide:glide:5.0.0-rc01")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("androidx.preference:preference:1.2.1")
@@ -96,9 +97,25 @@ dependencies {
 
 
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:4.0.0") // use the latest version
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
+
+    testImplementation("com.squareup.okhttp3:okhttp:4.9.1")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.9.1")
+    testImplementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
+
+
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.0")
+    testImplementation ("org.robolectric:robolectric:4.6.1")
+
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
 
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test:runner:1.5.1")
+    androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test:rules:1.5.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
+    androidTestImplementation("org.mockito:mockito-android:4.0.0") // use the latest version
+
+
 }

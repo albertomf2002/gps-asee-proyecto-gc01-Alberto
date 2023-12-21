@@ -1,4 +1,4 @@
-package es.unex.giiis.asee.totalmergency.view.home
+package es.unex.giiis.asee.totalemergency.view.home
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,10 +13,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
 import es.unex.giiis.asee.totalemergency.view.home.ProfileUpdaterViewModel
-import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
-import es.unex.giiis.asee.totalmergency.data.model.User
-import es.unex.giiis.asee.totalmergency.databinding.FragmentProfileUpdaterBinding
-import es.unex.giiis.asee.totalmergency.view.LoginActivity
+import es.unex.giiis.asee.totalemergency.data.database.TotalEmergencyDatabase
+import es.unex.giiis.asee.totalemergency.data.model.User
+import es.unex.giiis.asee.totalemergency.databinding.FragmentProfileUpdaterBinding
+import es.unex.giiis.asee.totalemergency.view.LoginActivity
 import kotlinx.coroutines.launch
 
 

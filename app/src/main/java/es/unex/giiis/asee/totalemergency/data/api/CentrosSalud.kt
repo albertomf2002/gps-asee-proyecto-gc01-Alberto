@@ -1,4 +1,4 @@
-package es.unex.giiis.asee.totalmergency.data.api
+package es.unex.giiis.asee.totalemergency.data.api
 
 
 import com.google.gson.annotations.SerializedName

@@ -1,4 +1,4 @@
-package es.unex.giiis.asee.totalmergency.data.model
+package es.unex.giiis.asee.totalemergency.data.model
 
 import android.net.Uri
 import java.io.Serializable

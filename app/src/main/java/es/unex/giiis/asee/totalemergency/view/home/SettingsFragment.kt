@@ -1,8 +1,8 @@
-package es.unex.giiis.asee.totalmergency.view.home
+package es.unex.giiis.asee.totalemergency.view.home
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
-import es.unex.giiis.asee.totalmergency.R
+import es.unex.giiis.asee.totalemergency.R
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
