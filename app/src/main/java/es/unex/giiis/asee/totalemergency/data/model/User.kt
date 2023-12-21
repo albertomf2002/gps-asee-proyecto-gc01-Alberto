@@ -10,7 +10,7 @@ data class User(
     val userName: String = "",
     val name: String = "",
     val lastName: String = "",
-    val email: String = "",
+    var email: String = "",
     val userPassword: String = "",
     val addres: String = "",
     val city: String = "",

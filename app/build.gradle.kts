@@ -117,5 +117,13 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
     androidTestImplementation("org.mockito:mockito-android:4.0.0") // use the latest version
 
+    androidTestImplementation("androidx.arch.core:core-testing:2.1.0") // use the latest version
+
+    androidTestImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.0") // For coroutine testing
+    androidTestImplementation ("androidx.test:core:1.3.0") // For ApplicationProvider
+
+    androidTestImplementation("androidx.room:room-testing:2.3.0") // use the appropriate version
+
+
 
 }
