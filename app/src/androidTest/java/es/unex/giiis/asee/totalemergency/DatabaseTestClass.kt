@@ -30,7 +30,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 @RunWith(AndroidJUnit4::class)
@@ -200,14 +202,32 @@ class DatabaseTestClass {
         assertEquals(0,contactDao.getAllContactsFromUser(1).size)
 
     }
-    /*
+
     @Test
-    fun writeUserAndReadInList() = runTest{
-        val user = User( /* initialize your user object */ )
+    fun dateTest() = runTest {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        db = Room.inMemoryDatabaseBuilder(context, TotalEmergencyDatabase::class.java)
+            .allowMainThreadQueries() // Only for testing
+            .build()
+        videoDao = db.videoDAO()
+
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val milliseconds = System.currentTimeMillis()
+
+        val video = VideoRecord(9999L, "storage/", 9999L, timeStamp)
+
+        runBlocking {
+            videoDao.insert(video)
+        }
+        val milliseconds2 = System.currentTimeMillis()
 
 
+        val videoGet = videoDao.getAllVideos().get(0)   //First one
 
-     */
+        assertEquals(timeStamp, videoGet.date)
+        assert(milliseconds2 > milliseconds)
+    }
+
 
 
 }
