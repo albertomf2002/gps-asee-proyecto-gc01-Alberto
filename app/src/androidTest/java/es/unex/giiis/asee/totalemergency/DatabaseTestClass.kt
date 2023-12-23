@@ -48,32 +48,25 @@ class DatabaseTestClass {
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    /*
     @Before
-    fun createDb(){
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(context, TotalEmergencyDatabase::class.java).build()
-
-        userDao = db.userDao()
-        videoDao = db.videoDAO()
-        contactDao = db.contactDAO()
-        LocalizacionesDAO = db.localizacionesDao()
-    }
-
-    @After
-    fun closeDb(){
-        db.close()
-    }
-
-     */
-    @Test
-    fun testUserDao() = runTest{
+    fun iniciarDB(){
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, TotalEmergencyDatabase::class.java)
             .allowMainThreadQueries() // Only for testing
             .build()
         userDao = db.userDao()
+        videoDao = db.videoDAO()
+        localizacionesDAO = db.localizacionesDao()
+        contactDao = db.contactDAO()
+    }
 
+    @After
+    fun eliminarDb(){
+        db.close()
+    }
+
+    @Test
+    fun testUserDao() = runTest{
         var user1 = User(1,"carlitos","Carlos","Jesus",
             "cj@gmail.com","1234","10000",
             "Caceres","España","123123123")
@@ -104,12 +97,6 @@ class DatabaseTestClass {
 
     @Test
     fun videoDao() = runTest{
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(context, TotalEmergencyDatabase::class.java)
-            .allowMainThreadQueries() // Only for testing
-            .build()
-        videoDao = db.videoDAO()
-
         val vr1 = VideoRecord(1, "path/1", 2, "13-2-2023")
         val vr3 = VideoRecord(3, "path/3", 2, "18-2-2023")
         val vr2 = VideoRecord(2, "path/2", 1, "14-2-2023")
@@ -133,12 +120,6 @@ class DatabaseTestClass {
 
     @Test
     fun localizationDao() = runTest{
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(context, TotalEmergencyDatabase::class.java)
-            .allowMainThreadQueries() // Only for testing
-            .build()
-        localizacionesDAO = db.localizacionesDao()
-
         val loc1 = Localizaciones("ID:1", 1.0, 1.0, "localizacion", 123456789L)
         val loc2 = Localizaciones("ID:2", -1.0, 0.3, "centro", 3232L)
         val list = mutableListOf<Localizaciones>()
@@ -169,25 +150,10 @@ class DatabaseTestClass {
         withContext(Dispatchers.Main) {
             liveData.removeObserver(observer)
         }
-
-
-        //val observedData = withContext(Dispatchers.Main) {
-        //    localizacionesDAO.getAllUbications().wait()
-        //}
-
-        //assertEquals(2, observedData?.size)
-        //assertEquals(0.3, prueba1?.latitude)
-
     }
 
     @Test
     fun contactDao() = runTest{
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(context, TotalEmergencyDatabase::class.java)
-            .allowMainThreadQueries() // Only for testing
-            .build()
-        contactDao = db.contactDAO()
-
         val contact1 = Contact(1, 123123123L, "Carlos", 1)
         val contact2 = Contact(2, 123456789L, "Paco", 2)
 
@@ -202,6 +168,47 @@ class DatabaseTestClass {
         assertEquals(0,contactDao.getAllContactsFromUser(1).size)
 
     }
+
+    @Test
+    fun safeUserDelete() = runTest {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        db = Room.inMemoryDatabaseBuilder(context, TotalEmergencyDatabase::class.java)
+            .allowMainThreadQueries() // Only for testing
+            .build()
+        videoDao = db.videoDAO()
+        userDao = db.userDao()
+        contactDao = db.contactDAO()
+
+        val vr1 = VideoRecord(1, "path/1", 2, "13-2-2023")
+        val vr3 = VideoRecord(3, "path/3", 2, "18-2-2023")
+        val vr2 = VideoRecord(2, "path/2", 1, "14-2-2023")
+        videoDao.insert(vr1)
+        videoDao.insert(vr2)
+        videoDao.insert(vr3)
+
+        val contact1 = Contact(1, 123123123L, "Carlos", 2)
+        val contact2 = Contact(2, 123456789L, "Paco", 1)
+
+        contactDao.insert(contact1)
+        contactDao.insert(contact2)
+
+        var user = User(2,"carlitos","Carlos","Jesus",
+            "cj@gmail.com","1234","10000",
+            "Caceres","España","123123123")
+        userDao.insert(user)
+
+        val cod = userDao.findByLogin("carlitos","1234")
+
+        videoDao.deleteFromUserId(cod)
+        contactDao.deleteFromUserId(cod)
+        userDao.deleteByCod(cod)
+
+        assertEquals(1, videoDao.getAllVideos().size)
+        assertEquals(1, contactDao.getAllContacts().size)
+        assertEquals(0, userDao.getAllUsers().size)
+
+    }
+
 
     @Test
     fun dateTest() = runTest {
@@ -227,7 +234,4 @@ class DatabaseTestClass {
         assertEquals(timeStamp, videoGet.date)
         assert(milliseconds2 > milliseconds)
     }
-
-
-
 }
