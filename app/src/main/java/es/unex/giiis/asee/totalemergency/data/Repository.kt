@@ -31,14 +31,17 @@ import java.util.Locale
 
 
 open class Repository (
-    private val localizacionesDao: LocalizacionesDAO,
-    private val userDao: UserDAO,
-    private val contactDao: ContactDAO,
-    private val videoRecordDao: VideoRecordDAO,
+    private var localizacionesDao: LocalizacionesDAO,
+    private var userDao: UserDAO,
+    private var contactDao: ContactDAO,
+    private var videoRecordDao: VideoRecordDAO,
     private var networkService: NetworkService
 ) {
     private var lastUpdateTimeMillis: Long = 0L
 
+    fun updateUserDao(_userDao : UserDAO){
+        userDao = _userDao
+    }
     fun updateNetworkService(_net : NetworkService){
         networkService = _net
     }
