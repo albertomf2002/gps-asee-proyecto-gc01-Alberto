@@ -1,5 +1,6 @@
 package es.unex.giiis.asee.totalemergency
 
+import es.unex.giiis.asee.totalemergency.data.model.Contact
 import es.unex.giiis.asee.totalemergency.util.CredentialCheck
 import org.junit.Test
 
@@ -39,5 +40,35 @@ class DefaultClassesTest {
         assertEquals(CredentialCheck.login("Car", "123").fail, true)
         assertEquals(CredentialCheck.login("Car", "123").msg, CredentialCheck.CredentialMessage.INVALID_USERNAME.message)
         assertEquals(CredentialCheck.login("Car", "123").error, CredentialCheck.CredentialError.UsernameError)
+    }
+
+
+
+
+
+
+
+
+    @Test
+    fun contactTest(){
+        val contact1 = Contact(1, 123456123L, "Juan", 1)
+        val contact2 = Contact(2, 999888777L, "Carlos", 2)
+        val contact3 = Contact(3, 111222333L, "Miguel", 1)
+
+        assertEquals(1, contact1.contactId)
+        assertEquals(2, contact2.contactId)
+        assertEquals(3, contact3.contactId)
+
+        assertEquals(123456123L, contact1.telephone)
+        assertEquals(999888777L, contact2.telephone)
+        assertEquals(111222333L, contact3.telephone)
+
+        assertEquals("Juan", contact1.contactName)
+        assertEquals("Carlos", contact2.contactName)
+        assertEquals("Miguel", contact3.contactName)
+
+        assertEquals(1, contact1.userId)
+        assertEquals(2, contact2.userId)
+        assertEquals(1, contact3.userId)
     }
 }
