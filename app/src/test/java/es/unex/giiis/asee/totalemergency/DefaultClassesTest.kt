@@ -42,13 +42,6 @@ class DefaultClassesTest {
         assertEquals(CredentialCheck.login("Car", "123").error, CredentialCheck.CredentialError.UsernameError)
     }
 
-
-
-
-
-
-
-
     @Test
     fun contactTest(){
         val contact1 = Contact(1, 123456123L, "Juan", 1)
