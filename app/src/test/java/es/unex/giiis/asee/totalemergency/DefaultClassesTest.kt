@@ -1,10 +1,17 @@
 package es.unex.giiis.asee.totalemergency
 
+import android.app.Activity
+import android.content.Context
+import es.unex.giiis.asee.totalemergency.data.Repository
 import es.unex.giiis.asee.totalemergency.data.model.Contact
 import es.unex.giiis.asee.totalemergency.util.CredentialCheck
+import es.unex.giiis.asee.totalemergency.view.home.EmergencyViewModel
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.Test
 
 import org.junit.Assert.*
+import org.mockito.kotlin.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).

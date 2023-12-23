@@ -109,6 +109,8 @@ dependencies {
     testImplementation ("org.robolectric:robolectric:4.6.1")
 
     testImplementation("androidx.arch.core:core-testing:2.1.0")
+    testImplementation("io.mockk:mockk:1.12.0")
+
 
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test:runner:1.5.2")
@@ -116,7 +118,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
     androidTestImplementation("org.mockito:mockito-android:4.0.0") // use the latest version
-
+    androidTestImplementation ("io.mockk:mockk-android:1.12.0")
     androidTestImplementation("androidx.arch.core:core-testing:2.1.0") // use the latest version
 
     androidTestImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.0") // For coroutine testing
