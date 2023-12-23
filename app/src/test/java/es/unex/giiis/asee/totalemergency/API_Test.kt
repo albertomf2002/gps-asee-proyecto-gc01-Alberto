@@ -34,9 +34,6 @@ class API_Test {
     private lateinit var viewModel : HomeMenuViewModel
     private lateinit var homeViewModel : HomeViewModel
 
-    private lateinit var testDb : TotalEmergencyDatabase
-    private lateinit var userDao: UserDAO
-
     @Mock
     private lateinit var repository: Repository
 
