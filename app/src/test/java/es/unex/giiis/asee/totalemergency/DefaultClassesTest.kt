@@ -3,10 +3,18 @@ package es.unex.giiis.asee.totalemergency
 import es.unex.giiis.asee.totalemergency.data.model.Localizaciones
 import es.unex.giiis.asee.totalemergency.data.model.User
 import es.unex.giiis.asee.totalemergency.data.model.VideoRecord
+import android.app.Activity
+import android.content.Context
+import es.unex.giiis.asee.totalemergency.data.Repository
+import es.unex.giiis.asee.totalemergency.data.model.Contact
 import es.unex.giiis.asee.totalemergency.util.CredentialCheck
+import es.unex.giiis.asee.totalemergency.view.home.EmergencyViewModel
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.Test
 
 import org.junit.Assert.*
+import org.mockito.kotlin.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -42,6 +50,29 @@ class DefaultClassesTest {
         assertEquals(CredentialCheck.login("Car", "123").fail, true)
         assertEquals(CredentialCheck.login("Car", "123").msg, CredentialCheck.CredentialMessage.INVALID_USERNAME.message)
         assertEquals(CredentialCheck.login("Car", "123").error, CredentialCheck.CredentialError.UsernameError)
+    }
+
+    @Test
+    fun contactTest(){
+        val contact1 = Contact(1, 123456123L, "Juan", 1)
+        val contact2 = Contact(2, 999888777L, "Carlos", 2)
+        val contact3 = Contact(3, 111222333L, "Miguel", 1)
+
+        assertEquals(1L, contact1.contactId)
+        assertEquals(2L, contact2.contactId)
+        assertEquals(3L, contact3.contactId)
+
+        assertEquals(123456123L, contact1.telephone)
+        assertEquals(999888777L, contact2.telephone)
+        assertEquals(111222333L, contact3.telephone)
+
+        assertEquals("Juan", contact1.contactName)
+        assertEquals("Carlos", contact2.contactName)
+        assertEquals("Miguel", contact3.contactName)
+
+        assertEquals(1L, contact1.userId)
+        assertEquals(2L, contact2.userId)
+        assertEquals(1L, contact3.userId)
     }
 
     @Test
