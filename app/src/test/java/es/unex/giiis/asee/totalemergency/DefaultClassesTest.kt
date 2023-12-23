@@ -55,9 +55,9 @@ class DefaultClassesTest {
         val contact2 = Contact(2, 999888777L, "Carlos", 2)
         val contact3 = Contact(3, 111222333L, "Miguel", 1)
 
-        assertEquals(1, contact1.contactId)
-        assertEquals(2, contact2.contactId)
-        assertEquals(3, contact3.contactId)
+        assertEquals(1L, contact1.contactId)
+        assertEquals(2L, contact2.contactId)
+        assertEquals(3L, contact3.contactId)
 
         assertEquals(123456123L, contact1.telephone)
         assertEquals(999888777L, contact2.telephone)
@@ -67,8 +67,8 @@ class DefaultClassesTest {
         assertEquals("Carlos", contact2.contactName)
         assertEquals("Miguel", contact3.contactName)
 
-        assertEquals(1, contact1.userId)
-        assertEquals(2, contact2.userId)
-        assertEquals(1, contact3.userId)
+        assertEquals(1L, contact1.userId)
+        assertEquals(2L, contact2.userId)
+        assertEquals(1L, contact3.userId)
     }
 }
