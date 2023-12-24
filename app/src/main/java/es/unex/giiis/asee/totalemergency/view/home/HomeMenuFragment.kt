@@ -1,4 +1,4 @@
-package es.unex.giiis.asee.totalmergency.view.home
+package es.unex.giiis.asee.totalemergency.view.home
 
 import androidx.fragment.app.Fragment
 
@@ -21,8 +21,8 @@ import es.unex.giiis.asee.totalemergency.view.home.HomeMenuViewModel
 import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
 
 
-import es.unex.giiis.asee.totalmergency.R
-import es.unex.giiis.asee.totalmergency.databinding.FragmentHomeMenuBinding
+import es.unex.giiis.asee.totalemergency.R
+import es.unex.giiis.asee.totalemergency.databinding.FragmentHomeMenuBinding
 
 class HomeMenuFragment : Fragment() {
 
@@ -73,6 +73,8 @@ class HomeMenuFragment : Fragment() {
     ): View? {
         _binding = FragmentHomeMenuBinding.inflate(inflater, container, false)
         listadoCentrosSalud = listOf<Localizaciones>()
+
+        viewModel.askLocationPermission(requireContext(), requireActivity())
 
         return binding.root
     }

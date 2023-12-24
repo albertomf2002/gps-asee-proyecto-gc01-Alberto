@@ -1,6 +1,11 @@
 package es.unex.giiis.asee.totalemergency.view.home
 
+
+import android.app.Activity
+import android.content.Context
+
 import android.util.Log
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,8 +14,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import es.unex.giiis.asee.totalemergency.TotalEmergencyApplication
 import es.unex.giiis.asee.totalemergency.data.Repository
-import es.unex.giiis.asee.totalmergency.data.model.Contact
-import es.unex.giiis.asee.totalmergency.data.model.User
+import es.unex.giiis.asee.totalemergency.data.model.Contact
+import es.unex.giiis.asee.totalemergency.data.model.User
 import kotlinx.coroutines.launch
 
 class ContactsViewModel(
@@ -19,12 +24,9 @@ class ContactsViewModel(
 
     var user : User? = null
 
-
     private val _contactos = MutableLiveData<List<Contact>?>()
     val contactos: LiveData<List<Contact>?>
         get() = _contactos
-
-
 
     fun obtenerListado(){
         viewModelScope.launch {
@@ -44,6 +46,11 @@ class ContactsViewModel(
         viewModelScope.launch {
             repository.deleteContactFromCod(cod)
         }
+    }
+
+    fun requirePermisson(context: Context, activity: Activity) {
+        // Check if the app has phone call permission
+        repository.askPhonePermission(context, activity)
     }
 
 

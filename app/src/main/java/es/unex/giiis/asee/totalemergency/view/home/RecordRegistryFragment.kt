@@ -1,6 +1,6 @@
-package es.unex.giiis.asee.totalmergency.view.home
+package es.unex.giiis.asee.totalemergency.view.home
 
-import android.content.Context
+
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,21 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
-import es.unex.giiis.asee.totalmergency.R
-import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
-import es.unex.giiis.asee.totalmergency.data.model.User
-import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
-import es.unex.giiis.asee.totalmergency.databinding.FragmentRecordRegistryBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.lang.RuntimeException
+import es.unex.giiis.asee.totalemergency.databinding.FragmentRecordRegistryBinding
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -39,25 +28,12 @@ class RecordRegistryFragment : Fragment() {
 
     private val homeViewModel: HomeViewModel by activityViewModels()
 
-    private lateinit var user: User
-
-    private lateinit var listener: OnShowClickListener
-
-    interface OnShowClickListener{
-        fun onShowClick(video: VideoRecord)
-    }
-
-
-    private lateinit var db: TotalEmergencyDatabase
+    private val viewModel : RecordRegistryViewModel by viewModels { RecordRegistryViewModel.Factory }
 
     private var _binding: FragmentRecordRegistryBinding? = null
     private val binding get() = _binding!!
 
-    private var videos: List<VideoRecord>? = null
-
     private lateinit var adapter: RecordRegistryAdapter
-
-    val scope = CoroutineScope(Job() + Dispatchers.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,14 +41,6 @@ class RecordRegistryFragment : Fragment() {
         }
     }
 
-    override fun onAttach(context: android.content.Context) {
-        super.onAttach(context)
-        if(context is OnShowClickListener){
-            listener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnShowClickListener")
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -81,13 +49,12 @@ class RecordRegistryFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentRecordRegistryBinding.inflate(inflater, container, false)
 
+        viewModel.obtainStoragePermission(requireContext(), requireActivity())
+
         homeViewModel.user.observe(viewLifecycleOwner) { us ->
-            user = us
+            viewModel.user = us
+            viewModel.obtainVideos()
         }
-
-        db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
-
-        //Log.i("TOTAL_VIDEOS", "videos size: " + videos!!.size)
 
         return binding.root
     }
@@ -95,20 +62,26 @@ class RecordRegistryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        GlobalScope.launch(Dispatchers.Main) {
-            Log.i("AAA", "Before updating data")
-            videos = db.videoDAO().getAllVideosFromUser(user.cod!!)
-            Log.i("AAA", "Size is: " + videos?.size)
+        viewModel.videos.observe(viewLifecycleOwner){ it ->
             setUpRecyclerView()
+
+            if(it == null || it.isEmpty()){
+                //Error checking
+                binding.nodata.visibility = View.VISIBLE
+                binding.nodataaux.visibility = View.VISIBLE
+            }else{
+                binding.nodata.visibility = View.GONE
+                binding.nodataaux.visibility = View.GONE
+            }
         }
 
     }
 
     private fun setUpRecyclerView(){
-        Log.i("AAA", "DONT CRASH is: " + videos?.size)
-        adapter = RecordRegistryAdapter(videos = videos!!,
+        Log.i("AAA", "DONT CRASH is: " + viewModel.videos.value?.size)
+        adapter = RecordRegistryAdapter(videos = viewModel.videos.value!!,
             onClick = {
-                listener.onShowClick(it)
+                homeViewModel.onShowClick(it)
                 Toast.makeText(context, "click on:" + it.path, Toast.LENGTH_SHORT).show()
         },
             onLongClick = {

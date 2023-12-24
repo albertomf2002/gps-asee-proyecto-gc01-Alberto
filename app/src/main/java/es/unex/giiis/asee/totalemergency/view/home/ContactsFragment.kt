@@ -1,6 +1,6 @@
-package es.unex.giiis.asee.totalmergency.view.home
+package es.unex.giiis.asee.totalemergency.view.home
 
-import android.content.Context
+
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,21 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
+
 import androidx.recyclerview.widget.LinearLayoutManager
-import es.unex.giiis.asee.totalemergency.view.home.ContactsViewModel
-import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
-import es.unex.giiis.asee.totalmergency.R
-import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
-import es.unex.giiis.asee.totalmergency.data.model.Contact
-import es.unex.giiis.asee.totalmergency.data.model.User
-import es.unex.giiis.asee.totalmergency.databinding.FragmentContactsBinding
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.lang.RuntimeException
+
+import es.unex.giiis.asee.totalemergency.data.model.Contact
+
+import es.unex.giiis.asee.totalemergency.databinding.FragmentContactsBinding
+
 
 
 /**
@@ -64,6 +59,7 @@ class ContactsFragment : Fragment(){
             viewModel.user = us
             viewModel.obtenerListado()
         }
+        viewModel.requirePermisson(requireContext(), requireActivity())
 
         // Inflate the layout for this fragment
         return binding.root
@@ -78,6 +74,10 @@ class ContactsFragment : Fragment(){
         }
 
         with(binding){
+            insertarTelefono.text = null
+            nombreContacto.text = null
+            nombreContacto.hint = "Nombre"
+            insertarTelefono.hint = "Número telefónico"
             botonInsertar.setOnClickListener {
 
                 val contacto = Contact(null, insertarTelefono.text.toString().toLong(), nombreContacto.text.toString(), userId = viewModel.user?.cod!!)
@@ -95,6 +95,8 @@ class ContactsFragment : Fragment(){
 
                 insertarTelefono.text = null
                 nombreContacto.text = null
+                nombreContacto.hint = "Nombre"
+                insertarTelefono.hint = "Número telefónico"
             }
         }
     }

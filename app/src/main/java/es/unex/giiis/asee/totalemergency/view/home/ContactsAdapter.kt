@@ -1,13 +1,13 @@
-package es.unex.giiis.asee.totalmergency.view.home
+package es.unex.giiis.asee.totalemergency.view.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
-import es.unex.giiis.asee.totalmergency.data.model.Contact
-import es.unex.giiis.asee.totalmergency.databinding.ContactItemListBinding
-import es.unex.giiis.asee.totalmergency.databinding.RecordItemListBinding
+import es.unex.giiis.asee.totalemergency.data.database.TotalEmergencyDatabase
+import es.unex.giiis.asee.totalemergency.data.model.Contact
+import es.unex.giiis.asee.totalemergency.databinding.ContactItemListBinding
+import es.unex.giiis.asee.totalemergency.databinding.RecordItemListBinding
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 

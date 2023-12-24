@@ -1,5 +1,7 @@
 package es.unex.giiis.asee.totalemergency.view.home
 
+import android.app.Activity
+import android.content.Context
 import android.text.Editable.Factory
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -11,8 +13,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import es.unex.giiis.asee.totalemergency.TotalEmergencyApplication
 import es.unex.giiis.asee.totalemergency.data.Repository
-import es.unex.giiis.asee.totalmergency.api.APIError
-import es.unex.giiis.asee.totalmergency.data.model.User
+import es.unex.giiis.asee.totalemergency.api.APIError
+import es.unex.giiis.asee.totalemergency.data.model.User
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -33,6 +35,10 @@ class HomeMenuViewModel (
 
     init {
         refresh()
+    }
+
+    fun askLocationPermission(context: Context, activity: Activity){
+        repository.askLocationPermission(context, activity)
     }
 
 

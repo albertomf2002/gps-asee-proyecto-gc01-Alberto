@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.icu.text.SimpleDateFormat
+import android.net.Network
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
@@ -16,27 +17,34 @@ import es.unex.giiis.asee.totalemergency.data.database.dao.ContactDAO
 import es.unex.giiis.asee.totalemergency.data.database.dao.LocalizacionesDAO
 import es.unex.giiis.asee.totalemergency.data.database.dao.UserDAO
 import es.unex.giiis.asee.totalemergency.data.database.dao.VideoRecordDAO
-import es.unex.giiis.asee.totalmergency.api.APIError
-import es.unex.giiis.asee.totalmergency.api.UbicationAPI
-import es.unex.giiis.asee.totalmergency.data.model.Contact
-import es.unex.giiis.asee.totalmergency.data.model.User
-import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
-import es.unex.giiis.asee.totalmergency.data.toLoc
-import es.unex.giiis.asee.totalmergency.view.home.HomeActivity
+import es.unex.giiis.asee.totalemergency.api.APIError
+import es.unex.giiis.asee.totalemergency.api.NetworkService
+import es.unex.giiis.asee.totalemergency.api.UbicationAPI
+import es.unex.giiis.asee.totalemergency.data.model.Contact
+import es.unex.giiis.asee.totalemergency.data.model.User
+import es.unex.giiis.asee.totalemergency.data.model.VideoRecord
+import es.unex.giiis.asee.totalemergency.data.toLoc
+import es.unex.giiis.asee.totalemergency.view.home.HomeActivity
 import java.io.File
 import java.util.Date
 import java.util.Locale
 
 
-class Repository (
-    private val localizacionesDao: LocalizacionesDAO,
-    private val userDao: UserDAO,
-    private val contactDao: ContactDAO,
-    private val videoRecordDao: VideoRecordDAO,
-    private val networkService: UbicationAPI
+open class Repository (
+    private var localizacionesDao: LocalizacionesDAO,
+    private var userDao: UserDAO,
+    private var contactDao: ContactDAO,
+    private var videoRecordDao: VideoRecordDAO,
+    private var networkService: NetworkService
 ) {
     private var lastUpdateTimeMillis: Long = 0L
 
+    fun updateUserDao(_userDao : UserDAO){
+        userDao = _userDao
+    }
+    fun updateNetworkService(_net : NetworkService){
+        networkService = _net
+    }
     fun systemDate() : String{
         return SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
     }
@@ -52,6 +60,10 @@ class Repository (
     }
     suspend fun insertVideo(vr : VideoRecord){
         videoRecordDao.insert(vr)
+    }
+
+    suspend fun getAllVideos(cod: Long) : List<VideoRecord> {
+        return videoRecordDao.getAllVideosFromUser(cod)
     }
 
     suspend fun deleteVideo(vr : Long){
@@ -146,13 +158,13 @@ class Repository (
     }
 
     private suspend fun fetchRecentUbications() {
-        Log.d("Repository", "Fetching data from ubications")
+        //Log.d("Repository", "Fetching data from ubications")
         try {
-            Log.d("Repository", "PRE DANGER")
-            val localizaciones = networkService.getAllUbications().map { it.toLoc() }
-            Log.d("Repository", "Data has been read: ${localizaciones.size}")
+            //Log.d("Repository", "PRE DANGER")
+            val localizaciones = networkService.getNetworkService().getAllUbications().map { it.toLoc() }
+            //Log.d("Repository", "Data has been read: ${localizaciones.size}")
             localizacionesDao.insertAll(localizaciones)
-            Log.d("Repository", "Data stored")
+            //Log.d("Repository", "Data stored")
             lastUpdateTimeMillis = System.currentTimeMillis()
         } catch (cause: Throwable) {
             throw APIError("Unable to fetch data from API", cause)
@@ -163,6 +175,69 @@ class Repository (
         val lastFetchTimeMillis = lastUpdateTimeMillis
         val timeFromLastFetch = System.currentTimeMillis() - lastFetchTimeMillis
         return timeFromLastFetch > MIN_TIME_FROM_LAST_FETCH_MILLIS || localizacionesDao.getTotalUbications() == 0L
+    }
+
+    fun askPhonePermission(context: Context, activity: Activity) {
+        val phonePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
+
+        if (phonePermission == PackageManager.PERMISSION_DENIED) {
+            // Phone call permission is not granted
+            // Request the permission
+            ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.CALL_PHONE), 100)
+        } else {
+            // Phone call permission is already granted, proceed with making a call
+            // Your code to start a call goes here
+        }
+    }
+
+    fun askLocationPermission(context: Context, activity: Activity){
+        val locationPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+
+        if (locationPermission == PackageManager.PERMISSION_DENIED) {
+            // Location permission is not granted
+            // Request the permission
+            ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 103)
+        } else {
+            // Location permission is already granted, proceed with accessing location
+            // Your code to access location goes here
+        }
+    }
+    fun askStoragePermission(context: Context, activity: Activity){
+
+        // Check if the app has permissions to read and write external storage
+        val readPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
+        val writePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+        if (readPermission == PackageManager.PERMISSION_DENIED || writePermission == PackageManager.PERMISSION_DENIED) {
+            // Permissions for reading or writing external storage are not granted
+            // Request both permissions
+
+            val permissionsToRequest = mutableListOf<String>()
+
+            // Check and add read external storage permission if needed
+            if (readPermission == PackageManager.PERMISSION_DENIED) {
+                permissionsToRequest.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
+
+            // Check and add write external storage permission if needed
+            if (writePermission == PackageManager.PERMISSION_DENIED) {
+                permissionsToRequest.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            }
+
+            // Request permissions
+            ActivityCompat.requestPermissions(activity, permissionsToRequest.toTypedArray(), 102)
+        } else {
+            // Both permissions are already granted, proceed with accessing photos and videos
+            // Your code to access photos and videos goes here
+        }
+    }
+
+    suspend fun insertUser(user: User) : Long {
+        return userDao.insert(user)
+    }
+
+    suspend fun getUserFromCredentials(name: String, password: String) : Long {
+        return userDao.findByLogin(name, password)
     }
 
     companion object {

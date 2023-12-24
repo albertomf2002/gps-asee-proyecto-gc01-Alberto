@@ -1,4 +1,4 @@
-package es.unex.giiis.asee.totalmergency.view.home
+package es.unex.giiis.asee.totalemergency.view.home
 
 import android.app.Activity
 import android.content.Context
@@ -17,14 +17,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
 import es.unex.giiis.asee.totalemergency.view.home.RecordDetailViewModel
-import es.unex.giiis.asee.totalmergency.R
-import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
-import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
-import es.unex.giiis.asee.totalmergency.databinding.FragmentRecordDetailBinding
+import es.unex.giiis.asee.totalemergency.R
+import es.unex.giiis.asee.totalemergency.data.database.TotalEmergencyDatabase
+import es.unex.giiis.asee.totalemergency.data.model.VideoRecord
+import es.unex.giiis.asee.totalemergency.databinding.FragmentRecordDetailBinding
 import kotlinx.coroutines.launch
 import org.apache.commons.io.FileUtils
 import java.io.File
@@ -39,6 +41,8 @@ import java.io.IOException
 class RecordDetail : Fragment() {
 
     private val viewModel : RecordDetailViewModel by viewModels { RecordDetailViewModel.Factory }
+
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
     private var _binding: FragmentRecordDetailBinding? = null
     private val binding get() = _binding!!
@@ -85,7 +89,6 @@ class RecordDetail : Fragment() {
 
         with(binding){
             //videoView.setVideoURI(uri)
-            val db = TotalEmergencyDatabase.getInstance((activity as HomeActivity).applicationContext)!!
 
             if(viewModel.path == null){
                 viewModel.deleteVideo(video)
@@ -101,6 +104,8 @@ class RecordDetail : Fragment() {
                 Log.d("INTENT", "REQUEST OPEN DOCUMENT")
 
                 viewModel.deleteFile(fdelete, video)
+
+                homeViewModel.regresarAListado()
             }
         }
     }

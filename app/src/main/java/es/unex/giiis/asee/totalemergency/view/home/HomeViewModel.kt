@@ -11,10 +11,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.navigation.NavController
 import es.unex.giiis.asee.totalemergency.TotalEmergencyApplication
 import es.unex.giiis.asee.totalemergency.data.Repository
-import es.unex.giiis.asee.totalmergency.data.model.Contact
-import es.unex.giiis.asee.totalmergency.data.model.User
+import es.unex.giiis.asee.totalemergency.R
+import es.unex.giiis.asee.totalemergency.data.model.Contact
+import es.unex.giiis.asee.totalemergency.data.model.User
+import es.unex.giiis.asee.totalemergency.data.model.VideoRecord
+import es.unex.giiis.asee.totalemergency.view.home.EmergencyFragmentDirections
+import es.unex.giiis.asee.totalemergency.view.home.RecordRegistryFragmentDirections
 import kotlinx.coroutines.launch
 
 
@@ -24,6 +29,7 @@ class HomeViewModel(
 {
     private val _user_cod = MutableLiveData<Long>()
     private val _user = MutableLiveData<User>(null)
+    var navController : NavController? = null
     val user: LiveData<User>
         get() = _user
 
@@ -52,6 +58,14 @@ class HomeViewModel(
         //Nothing, yet
     }
 
+    fun regresarAListado(){
+        navController?.navigate(R.id.backto_recordRegistryFragment)
+    }
+
+    fun onShowClick(video: VideoRecord){
+        val action = RecordRegistryFragmentDirections.actionShowRecordDetail2(video)
+        navController?.navigate(action)
+    }
 
 
     fun obtenerUser(cod : Long){
@@ -62,6 +76,10 @@ class HomeViewModel(
 
     fun navitageToProfileUpdater(){
 
+    }
+
+    fun guardarNavController(_navController: NavController) {
+        navController = _navController
     }
 
 

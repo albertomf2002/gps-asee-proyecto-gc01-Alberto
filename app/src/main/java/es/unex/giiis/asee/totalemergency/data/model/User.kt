@@ -1,4 +1,4 @@
-package es.unex.giiis.asee.totalmergency.data.model
+package es.unex.giiis.asee.totalemergency.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -10,7 +10,7 @@ data class User(
     val userName: String = "",
     val name: String = "",
     val lastName: String = "",
-    val email: String = "",
+    var email: String = "",
     val userPassword: String = "",
     val addres: String = "",
     val city: String = "",

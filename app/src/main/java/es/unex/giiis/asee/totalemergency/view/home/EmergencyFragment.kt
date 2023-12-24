@@ -1,16 +1,14 @@
-package es.unex.giiis.asee.totalmergency.view.home
+package es.unex.giiis.asee.totalemergency.view.home
 
-import android.Manifest
+
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
-import android.content.Context
+
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.icu.text.SimpleDateFormat
-import android.icu.util.Calendar
+
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
+
 import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -18,26 +16,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
+
 import androidx.fragment.app.activityViewModels
-import es.unex.giiis.asee.totalemergency.view.home.HomeViewModel
+
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import es.unex.giiis.asee.totalemergency.view.home.EmergencyViewModel
-import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
-import es.unex.giiis.asee.totalmergency.data.model.User
-import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
-import es.unex.giiis.asee.totalmergency.databinding.FragmentEmergencyBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import java.io.File
-import java.io.FilePermission
-import java.util.Date
-import java.util.Locale
+
+import es.unex.giiis.asee.totalemergency.databinding.FragmentEmergencyBinding
+
 
 
 /**
@@ -50,9 +36,10 @@ class EmergencyFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
 
     private var _binding: FragmentEmergencyBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var videoUri : Uri
-    private val binding get() = _binding!!
+
 
     private val viewModel : EmergencyViewModel by viewModels { EmergencyViewModel.Factory }
 
@@ -72,6 +59,7 @@ class EmergencyFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.obtainPermission(requireContext(), activity as HomeActivity)
+        viewModel.obtainStoragePermission(requireContext(), activity as HomeActivity)
     }
 
     override fun onCreateView(

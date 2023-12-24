@@ -1,46 +1,44 @@
 package es.unex.giiis.asee.totalemergency.view.home
 
+import android.app.Activity
+import android.content.Context
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import es.unex.giiis.asee.totalemergency.TotalEmergencyApplication
 import es.unex.giiis.asee.totalemergency.data.Repository
+import es.unex.giiis.asee.totalemergency.data.model.User
 import es.unex.giiis.asee.totalemergency.data.model.VideoRecord
+import es.unex.giiis.asee.totalemergency.view.home.HomeActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.File
 
-class RecordDetailViewModel(
+class RecordRegistryViewModel(
     private val repository: Repository,
 ) : ViewModel() {
 
+    var user : User? = null
 
-    var path : String? = null
-    var video : VideoRecord? = null
+    private val _videos = MutableLiveData<List<VideoRecord>>()
+    val videos : LiveData<List<VideoRecord>>
+        get() = _videos
 
-    fun deleteVideo(video: VideoRecord?) {
-        viewModelScope.launch {
-            repository.deleteVideo(video?.videoId!!)
+    fun obtainStoragePermission(context: Context, activity: Activity) {
+        repository.askStoragePermission(context, activity)
+    }
+
+    fun obtainVideos() {
+        viewModelScope.launch() {
+            _videos.value = repository.getAllVideos(user?.cod!!)
         }
     }
 
-    fun deleteFile(fdelete: File, video: VideoRecord?) {
-        viewModelScope.launch {
-            if(fdelete.delete()){
-                Log.i("DELETE", "It was succesfully deleted")
-                repository.deleteVideo(video?.videoId!!)
-            }else{
-                Log.i("DELETE", "It was NOT succesfully deleted")
-            }
 
-        }
-    }
-
-    init {
-
-    }
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
@@ -50,7 +48,7 @@ class RecordDetailViewModel(
             ): T {
                 val application =
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-                return RecordDetailViewModel(
+                return RecordRegistryViewModel(
                     (application as TotalEmergencyApplication).appContainer.repository
                 ) as T
             }

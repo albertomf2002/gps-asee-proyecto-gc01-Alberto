@@ -6,21 +6,21 @@
     app:startDestination="@id/homeMenuFragment">
     <fragment
         android:id="@+id/homeMenuFragment"
-        android:name="es.unex.giiis.asee.totalmergency.view.home.HomeMenuFragment"
+        android:name="es.unex.giiis.asee.totalemergency.view.home.HomeMenuFragment"
         android:label="Mapa"
         tools:layout="@layout/fragment_home_menu" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="es.unex.giiis.asee.totalmergency.view.home.ProfileFragment"
+        android:name="es.unex.giiis.asee.totalemergency.view.home.ProfileFragment"
         android:label="Perfil"
         tools:layout="@layout/fragment_profile">
         <argument
             android:name="userData"
-            app:argType="es.unex.giiis.asee.totalmergency.data.model.User" />
+            app:argType="es.unex.giiis.asee.totalemergency.data.model.User" />
     </fragment>
     <fragment
         android:id="@+id/emergencyFragment"
-        android:name="es.unex.giiis.asee.totalmergency.view.home.EmergencyFragment"
+        android:name="es.unex.giiis.asee.totalemergency.view.home.EmergencyFragment"
         android:label="Emergencias"
         tools:layout="@layout/fragment_emergency">
         <action
@@ -31,17 +31,17 @@
     </fragment>
     <fragment
         android:id="@+id/recordRegistryFragment"
-        android:name="es.unex.giiis.asee.totalmergency.view.home.RecordRegistryFragment"
+        android:name="es.unex.giiis.asee.totalemergency.view.home.RecordRegistryFragment"
         android:label="Listado de emergencias"
         tools:layout="@layout/fragment_record_registry" />
     <fragment
         android:id="@+id/recordDetail"
-        android:name="es.unex.giiis.asee.totalmergency.view.home.RecordDetail"
+        android:name="es.unex.giiis.asee.totalemergency.view.home.RecordDetail"
         android:label="Video emergencias"
         tools:layout="@layout/fragment_record_detail">
         <argument
             android:name="VideoUri"
-            app:argType="es.unex.giiis.asee.totalmergency.data.model.VideoRecord"
+            app:argType="es.unex.giiis.asee.totalemergency.data.model.VideoRecord"
             app:nullable="true" />
     </fragment>
     <action
@@ -49,19 +49,22 @@
         app:destination="@id/recordDetail" />
     <fragment
         android:id="@+id/contactsFragment"
-        android:name="es.unex.giiis.asee.totalmergency.view.home.ContactsFragment"
+        android:name="es.unex.giiis.asee.totalemergency.view.home.ContactsFragment"
         android:label="Contactos"
         tools:layout="@layout/fragment_contacts" />
     <fragment
         android:id="@+id/profileUpdaterFragment"
-        android:name="es.unex.giiis.asee.totalmergency.view.home.ProfileUpdaterFragment"
+        android:name="es.unex.giiis.asee.totalemergency.view.home.ProfileUpdaterFragment"
         android:label="Cambiar perfil"
         tools:layout="@layout/fragment_profile_updater" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="es.unex.giiis.asee.totalmergency.view.home.SettingsFragment"
+        android:name="es.unex.giiis.asee.totalemergency.view.home.SettingsFragment"
         android:label="Ajustes" />
     <action
         android:id="@+id/home_to_settings"
         app:destination="@id/settingsFragment" />
+    <action
+        android:id="@+id/backto_recordRegistryFragment"
+        app:destination="@id/recordRegistryFragment" />
 </navigation>

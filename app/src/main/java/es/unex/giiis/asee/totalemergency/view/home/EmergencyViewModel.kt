@@ -14,11 +14,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import es.unex.giiis.asee.totalemergency.TotalEmergencyApplication
 import es.unex.giiis.asee.totalemergency.data.Repository
-import es.unex.giiis.asee.totalmergency.api.APIError
-import es.unex.giiis.asee.totalmergency.data.database.TotalEmergencyDatabase
-import es.unex.giiis.asee.totalmergency.data.model.User
-import es.unex.giiis.asee.totalmergency.data.model.VideoRecord
-import es.unex.giiis.asee.totalmergency.view.home.HomeActivity
+import es.unex.giiis.asee.totalemergency.api.APIError
+import es.unex.giiis.asee.totalemergency.data.database.TotalEmergencyDatabase
+import es.unex.giiis.asee.totalemergency.data.model.User
+import es.unex.giiis.asee.totalemergency.data.model.VideoRecord
+import es.unex.giiis.asee.totalemergency.view.home.HomeActivity
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
@@ -73,6 +73,11 @@ class EmergencyViewModel (
             repository.insertVideo(vr)
         }
     }
+
+    fun obtainStoragePermission(context: Context, activity: HomeActivity) {
+        repository.askStoragePermission(context, activity)
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
