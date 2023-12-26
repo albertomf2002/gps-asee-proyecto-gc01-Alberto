@@ -90,10 +90,6 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    fun setupUI(user: User?){
-
-    }
-
     companion object {
         const val USER_INFO = HomeActivity.USER_INFO;
         @JvmStatic
