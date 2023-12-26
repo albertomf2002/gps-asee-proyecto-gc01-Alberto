@@ -3,12 +3,10 @@ package es.unex.giiis.asee.totalemergency.api
 import es.unex.giiis.asee.totalemergency.data.api.CentrosSalud
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Url
-//hola5
 
 class NetworkService(private val baseUrl: String= "https://datos.vigo.org/data/") {
 
