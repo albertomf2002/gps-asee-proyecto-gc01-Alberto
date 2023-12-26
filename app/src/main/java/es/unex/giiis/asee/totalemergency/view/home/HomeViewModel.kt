@@ -74,9 +74,6 @@ class HomeViewModel(
         }
     }
 
-    fun navitageToProfileUpdater(){
-
-    }
 
     fun guardarNavController(_navController: NavController) {
         navController = _navController
