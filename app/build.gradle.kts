@@ -4,6 +4,15 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     id("com.google.devtools.ksp")
+    id("org.sonarqube") version "4.4.1.3373"
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "albertomf2002_gps-asee-proyecto-gc01-Alberto")
+        property("sonar.organization", "albertomf2002")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
 }
 
 android {
